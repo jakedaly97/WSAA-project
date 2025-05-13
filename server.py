@@ -1,84 +1,94 @@
-from flask import Flask, request, jsonify, abort
-from eventDAO import eventDAO  # only change from bookDAO
-
+from flask import Flask, jsonify, request, abort
+from flask_cors import CORS, cross_origin
 app = Flask(__name__)
+cors = CORS(app)  # allow CORS for all domains on all routes.
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+# Import the eventDAO for database operations
+from eventDAO import eventDAO
 
 @app.route('/')
+@cross_origin()
 def index():
-    return "Hello world"
+    return "Hello, World!"
 
-# GET all
-@app.route('/events', methods=['GET'])
+#curl "http://127.0.0.1:5000/events"
+@app.route('/events')
+@cross_origin()
 def getAll():
-    return jsonify(eventDAO.getAll())
+    # Retrieve all events from the database
+    results = eventDAO.getAll()
+    return jsonify(results)
 
-# GET by ID
-@app.route('/events/<int:id>', methods=['GET'])
+#curl "http://127.0.0.1:5000/events/2"
+@app.route('/events/<int:id>')
+@cross_origin()
 def findById(id):
-    return jsonify(eventDAO.findByID(id))
+    # Retrieve a specific event by ID
+    foundEvent = eventDAO.findByID(id)
+    return jsonify(foundEvent)
 
-# CREATE
+#curl  -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Concert\",\"location\":\"Stadium\",\"date\":\"2025-05-15\",\"genre\":\"Music\",\"description\":\"A great concert!\",\"price\":50}" http://127.0.0.1:5000/events
 @app.route('/events', methods=['POST'])
+@cross_origin()
 def create():
-    jsonstring = request.json
-    event = {}
+    if not request.json:
+        abort(400)
 
-    if "name" not in jsonstring:
-        abort(403)
-    event["name"] = jsonstring["name"]
+    # Retrieve data from the request
+    event = {
+        "name": request.json['name'],
+        "location": request.json['location'],
+        "date": request.json['date'],
+        "genre": request.json['genre'],
+        "description": request.json['description'],
+        "price": request.json['price'],
+    }
 
-    if "location" not in jsonstring:
-        abort(403)
-    event["location"] = jsonstring["location"]
+    # Add the event to the database
+    addedEvent = eventDAO.create(event)
+    
+    return jsonify(addedEvent)
 
-    if "date" not in jsonstring:
-        abort(403)
-    event["date"] = jsonstring["date"]
-
-    if "genre" not in jsonstring:
-        abort(403)
-    event["genre"] = jsonstring["genre"]
-
-    if "description" not in jsonstring:
-        abort(403)
-    event["description"] = jsonstring["description"]
-
-    if "price" not in jsonstring:
-        abort(403)
-    event["price"] = jsonstring["price"]
-
-    return jsonify(eventDAO.create(event))
-
-# UPDATE
+#curl  -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"Updated Concert\",\"location\":\"Arena\",\"date\":\"2025-06-01\",\"genre\":\"Pop\",\"description\":\"Updated description\",\"price\":60}" http://127.0.0.1:5000/events/1
 @app.route('/events/<int:id>', methods=['PUT'])
+@cross_origin()
 def update(id):
-    jsonstring = request.json
-    event = {}
+    foundEvent = eventDAO.findByID(id)
+    if not foundEvent:
+        abort(404)
+    
+    if not request.json:
+        abort(400)
+    
+    reqJson = request.json
 
-    if "name" in jsonstring:
-        event["name"] = jsonstring["name"]
+    if 'price' in reqJson and type(reqJson['price']) is not int:
+        abort(400)
 
-    if "location" in jsonstring:
-        event["location"] = jsonstring["location"]
+    # Update the event with the new values
+    if 'name' in reqJson:
+        foundEvent['name'] = reqJson['name']
+    if 'location' in reqJson:
+        foundEvent['location'] = reqJson['location']
+    if 'date' in reqJson:
+        foundEvent['date'] = reqJson['date']
+    if 'genre' in reqJson:
+        foundEvent['genre'] = reqJson['genre']
+    if 'description' in reqJson:
+        foundEvent['description'] = reqJson['description']
+    if 'price' in reqJson:
+        foundEvent['price'] = reqJson['price']
+    
+    eventDAO.update(id, foundEvent)
+    
+    return jsonify(foundEvent)
 
-    if "date" in jsonstring:
-        event["date"] = jsonstring["date"]
-
-    if "genre" in jsonstring:
-        event["genre"] = jsonstring["genre"]
-
-    if "description" in jsonstring:
-        event["description"] = jsonstring["description"]
-
-    if "price" in jsonstring:
-        event["price"] = jsonstring["price"]
-
-    return jsonify(eventDAO.update(id, event))
-
-# DELETE
 @app.route('/events/<int:id>', methods=['DELETE'])
+@cross_origin()
 def delete(id):
-    return jsonify(eventDAO.delete(id))
+    eventDAO.delete(id)
+    return jsonify({"done": True})
 
 if __name__ == '__main__':
     app.run(debug=True)
