@@ -1,29 +1,32 @@
 from flask import Flask, jsonify, request, abort, send_from_directory
 import os
-app = Flask(__name__)
+
+# Initialize the Flask app
+app = Flask(__name__, static_url_path='', static_folder='.')
 
 # Import the eventDAO for database operations
 from eventDAO import eventDAO
 
-@app.route('/')
-def index():
+# Route to serve the eventviewer.html file
+@app.route('/eventviewer.html')
+def eventviewer():
     return send_from_directory('.', 'eventviewer.html')
 
-#curl "http://127.0.0.1:5000/events"
+# Route to get all events
 @app.route('/events')
 def getAll():
     # Retrieve all events from the database
     results = eventDAO.getAll()
     return jsonify(results)
 
-#curl "http://127.0.0.1:5000/events/2"
+# Route to get a specific event by ID
 @app.route('/events/<int:id>')
 def findById(id):
     # Retrieve a specific event by ID
     foundEvent = eventDAO.findByID(id)
     return jsonify(foundEvent)
 
-#curl  -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Concert\",\"location\":\"Stadium\",\"date\":\"2025-05-15\",\"genre\":\"Music\",\"description\":\"A great concert!\",\"price\":50}" http://127.0.0.1:5000/events
+# Route to create a new event
 @app.route('/events', methods=['POST'])
 def create():
     if not request.json:
@@ -44,7 +47,7 @@ def create():
     
     return jsonify(addedEvent)
 
-#curl  -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"Updated Concert\",\"location\":\"Arena\",\"date\":\"2025-06-01\",\"genre\":\"Pop\",\"description\":\"Updated description\",\"price\":60}" http://127.0.0.1:5000/events/1
+# Route to update an existing event
 @app.route('/events/<int:id>', methods=['PUT'])
 def update(id):
     foundEvent = eventDAO.findByID(id)
@@ -77,6 +80,7 @@ def update(id):
     
     return jsonify(foundEvent)
 
+# Route to delete an event by ID
 @app.route('/events/<int:id>', methods=['DELETE'])
 def delete(id):
     eventDAO.delete(id)
