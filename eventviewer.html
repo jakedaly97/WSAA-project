@@ -59,41 +59,105 @@
             <form>
                 <input type="hidden" name="id" />
                 <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" name="name" class="form-control" />
+                    <label for="name">Name</label>
+                    <input type="text" name="name" class="form-control" id="name" />
+                    <span id="name-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
-                    <label>Location</label>
-                    <input type="text" name="location" class="form-control" />
+                    <label for="location">Location</label>
+                    <input type="text" name="location" class="form-control" id="location" />
+                    <span id="location-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
-                    <label>Date</label>
-                    <input type="date" name="date" class="form-control" />
+                    <label for="date">Date</label>
+                    <input type="date" name="date" class="form-control" id="date" />
+                    <span id="date-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
-                    <label>Genre</label>
-                    <input type="text" name="genre" class="form-control" />
+                    <label for="genre">Genre</label>
+                    <input type="text" name="genre" class="form-control" id="genre" />
+                    <span id="genre-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
-                    <label>Description</label>
-                    <textarea name="description" class="form-control"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Price (€)</label>
-                    <input type="number" name="price" class="form-control" />
+                    <label for="price">Price (€)</label>
+                    <input type="number" name="price" class="form-control" id="price" />
+                    <span id="price-error" class="error-message"></span>
                 </div>
                 <div>
-                    <button type="button" id="doCreateButton" class="btn btn-primary btn-lg" onclick="doCreate()">Create</button>
-                    <button type="button" id="doUpdateButton" class="btn btn-info" onclick="doUpdate()">Update</button>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="if (validateForm()) doCreate()">Create</button>
+                    <button type="button" class="btn btn-info" onclick="if (validateForm()) doUpdate()">Update</button>
                     <button type="button" class="btn btn-secondary btn-danger" onclick="showViewAll()">Cancel</button>
                 </div>
             </form>
-        </div>
-    </div>
+            
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <script>
+    
+    function validateForm() {
+    const name = document.getElementById("name").value;
+    const location = document.getElementById("location").value;
+    const date = document.getElementById("date").value;
+    const genre = document.getElementById("genre").value;
+    const price = document.getElementById("price").value;
+
+    const nameErr = document.getElementById("name-error");
+    const locErr = document.getElementById("location-error");
+    const dateErr = document.getElementById("date-error");
+    const genreErr = document.getElementById("genre-error");
+    const priceErr = document.getElementById("price-error");
+
+    nameErr.textContent = "";
+    locErr.textContent = "";
+    dateErr.textContent = "";
+    genreErr.textContent = "";
+    priceErr.textContent = "";
+
+    let isValid = true;
+
+    if (name === "" || /\d/.test(name)) {
+        nameErr.textContent = "Please enter correct event name.";
+        isValid = false;
+    }
+
+    if (location === "") {
+        locErr.textContent = "Please enter location.";
+        isValid = false;
+    }
+
+    if (date === "") {
+        dateErr.textContent = "Please select a date.";
+        isValid = false;
+    }
+        if (genre === "") {
+        genreErr.textContent = "Please enter the genre.";
+        isValid = false;
+    }
+
+    if (price === "") {
+        priceErr.textContent = "Please enter a valid price.";
+        isValid = false;
+    }
+
+
+    if (isValid) {
+        alert("Form submitted successfully!");
+        return true;
+    }
+    else {
+        return false;
+    }
+    }
+
+    function resetErrors() {
+        document.getElementById("name-error").textContent = "";
+        document.getElementById("location-error").textContent = "";
+        document.getElementById("date-error").textContent = "";
+        document.getElementById("genre-error").textContent = "";
+        document.getElementById("price-error").textContent = "";
+    }   
+
     function showCreate(){
         document.getElementById('showCreateButton').style.display="none"
         document.getElementById('eventTable').style.display="none"
