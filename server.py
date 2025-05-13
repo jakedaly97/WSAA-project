@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, send_from_directory
 from flask_cors import CORS, cross_origin
+import os
 app = Flask(__name__)
 cors = CORS(app)  # allow CORS for all domains on all routes.
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -10,7 +11,7 @@ from eventDAO import eventDAO
 @app.route('/')
 @cross_origin()
 def index():
-    return "Hello, World!"
+    return send_from_directory('.', 'eventviewer.html')
 
 #curl "http://127.0.0.1:5000/events"
 @app.route('/events')
