@@ -1,69 +1,84 @@
-from flask import Flask, jsonify, request, abort
-from eventDAO import eventDAO  # Changed from bookDAO to eventDAO
+from flask import Flask, request, jsonify, abort
+from eventDAO import eventDAO  # only change from bookDAO
 
-app = Flask(__name__, static_url_path='', static_folder='.')
+app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "Hello, World!"
+    return "Hello world"
 
-@app.route('/events')
+# GET all
+@app.route('/events', methods=['GET'])
 def getAll():
-    results = eventDAO.getAll()
-    return jsonify(results)
+    return jsonify(eventDAO.getAll())
 
-@app.route('/events/<int:id>')
+# GET by ID
+@app.route('/events/<int:id>', methods=['GET'])
 def findById(id):
-    foundEvent = eventDAO.findByID(id)
-    return jsonify(foundEvent)
+    return jsonify(eventDAO.findByID(id))
 
+# CREATE
 @app.route('/events', methods=['POST'])
 def create():
-    if not request.json:
-        abort(400)
-    event = {
-        "name": request.json['name'],
-        "location": request.json['location'],
-        "date": request.json['date'],
-        "genre": request.json['genre'],
-        "description": request.json['description'],
-        "price": request.json['price'],
-    }
-    addedEvent = eventDAO.create(event)
-    return jsonify(addedEvent)
+    jsonstring = request.json
+    event = {}
 
+    if "name" not in jsonstring:
+        abort(403)
+    event["name"] = jsonstring["name"]
+
+    if "location" not in jsonstring:
+        abort(403)
+    event["location"] = jsonstring["location"]
+
+    if "date" not in jsonstring:
+        abort(403)
+    event["date"] = jsonstring["date"]
+
+    if "genre" not in jsonstring:
+        abort(403)
+    event["genre"] = jsonstring["genre"]
+
+    if "description" not in jsonstring:
+        abort(403)
+    event["description"] = jsonstring["description"]
+
+    if "price" not in jsonstring:
+        abort(403)
+    event["price"] = jsonstring["price"]
+
+    return jsonify(eventDAO.create(event))
+
+# UPDATE
 @app.route('/events/<int:id>', methods=['PUT'])
 def update(id):
-    foundEvent = eventDAO.findByID(id)
-    if not foundEvent:
-        abort(404)
-    
-    if not request.json:
-        abort(400)
-    reqJson = request.json
-    if 'price' in reqJson and type(reqJson['price']) is not int:
-        abort(400)
+    jsonstring = request.json
+    event = {}
 
-    if 'name' in reqJson:
-        foundEvent['name'] = reqJson['name']
-    if 'location' in reqJson:
-        foundEvent['location'] = reqJson['location']
-    if 'date' in reqJson:
-        foundEvent['date'] = reqJson['date']
-    if 'genre' in reqJson:
-        foundEvent['genre'] = reqJson['genre']
-    if 'description' in reqJson:
-        foundEvent['description'] = reqJson['description']
-    if 'price' in reqJson:
-        foundEvent['price'] = reqJson['price']
-    
-    eventDAO.update(id, foundEvent)
-    return jsonify(foundEvent)
+    if "name" in jsonstring:
+        event["name"] = jsonstring["name"]
 
+    if "location" in jsonstring:
+        event["location"] = jsonstring["location"]
+
+    if "date" in jsonstring:
+        event["date"] = jsonstring["date"]
+
+    if "genre" in jsonstring:
+        event["genre"] = jsonstring["genre"]
+
+    if "description" in jsonstring:
+        event["description"] = jsonstring["description"]
+
+    if "price" in jsonstring:
+        event["price"] = jsonstring["price"]
+
+    return jsonify(eventDAO.update(id, event))
+
+# DELETE
 @app.route('/events/<int:id>', methods=['DELETE'])
 def delete(id):
-    eventDAO.delete(id)
-    return jsonify({"done": True})
+    return jsonify(eventDAO.delete(id))
 
 if __name__ == '__main__':
     app.run(debug=True)
