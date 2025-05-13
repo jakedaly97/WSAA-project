@@ -81,10 +81,12 @@ class EventDAO:
         self.closeAll()
 
     def convertToDictionary(self, resultLine):
-        attkeys = ['id', 'name', 'location', 'date', 'genre', 'description', 'price']
+        attkeys=['id', 'name', 'location', 'date', 'genre', 'description', 'price']
         event = {}
-        for idx, attrib in enumerate(resultLine):
-            event[attkeys[idx]] = attrib
+        currentkey = 0
+        for attrib in resultLine:
+            event[attkeys[currentkey]] = attrib
+            currentkey = currentkey + 1 
         return event
 
 eventDAO = EventDAO()
