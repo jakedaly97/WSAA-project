@@ -1,14 +1,14 @@
 <html>
     <head>
         <title>View Events</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-        <script src="./ajaxcalls.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
     <body>
         <h1>Events</h1>
-        <div><button id="button-showCreate" onclick="showCreate()">Create an event</button><br/><br/></div>
+        <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
         <div>
-            <table border="1" id="eventTable">
+            <table class="table" id="eventTable">
                 <tr>
                     <th>id</th>
                     <th>Name</th>
@@ -20,211 +20,237 @@
                     <th>Update</th>
                     <th>Delete</th>
                 </tr>
-                <tr id="1">
-                    <td>1</td>
-                    <td>Music Festival</td>
-                    <td>New York</td>
-                    <td>2025-06-12</td>
-                    <td>Music</td>
-                    <td>A fun music event</td>
-                    <td>50</td>
-                    <td><button onclick="showUpdate(this)">update</button></td>
-                    <td><button onclick="doDelete(this)">delete</button></td>
-                </tr>
             </table>
         </div>
-        <div id="createUpdateForm" style="display:none">
-            <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Event</h2>
-            id <input type="text" name="id"><br/>
-            Name <input type="text" name="name"><br/>
-            Location <input type="text" name="location"><br/>
-            Date <input type="date" name="date"><br/>
-            Genre <input type="text" name="genre"><br/>
-            Description <input type="text" name="description"><br/>
-            Price <input type="number" name="price"><br/>
-            <span><button id="button-doCreate" onclick="doCreate()">Create</button></span>
-            <span><button id="button-doUpdate" onclick="doUpdate()">Update</button></span>
+        <div id='createUpdateForm' style="display: none">
+            <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Event</h2>
+            <input type="hidden" name="id"/>
+            Name <input type="text" name="name" /><br/>
+            Location <input type="text" name="location"/><br/>
+            Date <input type="text" name="date"/><br/>
+            Genre <input type="text" name="genre"/><br/>
+            Description <input type="text" name="description"/><br/>
+            Price <input type="number" name="price"/><br/>
+            <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
+            <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
         </div>
     </body>
     <script>
-        function showCreate() {
-            document.getElementById("createUpdateForm").style.display = "block";
-            document.getElementById("button-doCreate").style.display = "block";
-            document.getElementById("button-doUpdate").style.display = "none";
-            document.getElementById("createLabel").style.display = "inline";
-            document.getElementById("updateLabel").style.display = "none";
-            document.getElementById("button-showCreate").style.display = "none";
-            document.getElementById("eventTable").style.display = "none";
-        }
+    function showCreate(){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('eventTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
 
-        function showUpdate(buttonElement) {
-            document.getElementById("createUpdateForm").style.display = "block";
-            document.getElementById("button-doCreate").style.display = "none";
-            document.getElementById("button-doUpdate").style.display = "block";
-            document.getElementById("createLabel").style.display = "none";
-            document.getElementById("updateLabel").style.display = "inline";
-            document.getElementById("button-showCreate").style.display = "none";
-            document.getElementById("eventTable").style.display = "none";
-            
-            rowElement = buttonElement.parentNode.parentNode;
-            event = getEventFromRow(rowElement);
-            populateFormWithEvent(event);
-        }
+        document.getElementById('createLabel').style.display="inline"
+        document.getElementById('updateLabel').style.display="none"
 
-        function showViewall() {
-            document.getElementById("createUpdateForm").style.display = "none";
-            document.getElementById("button-showCreate").style.display = "block";
-            document.getElementById("eventTable").style.display = "block";
-        }
+        document.getElementById('doCreateButton').style.display="block"
+        document.getElementById('doUpdateButton').style.display="none"
+    }
 
-        function clearForm() {
-            var form = document.getElementById('createUpdateForm');
-            form.querySelector('input[name="id"]').disabled = false;
-            form.querySelector('input[name="id"]').value = '';
-            form.querySelector('input[name="name"]').value = '';
-            form.querySelector('input[name="location"]').value = '';
-            form.querySelector('input[name="date"]').value = '';
-            form.querySelector('input[name="genre"]').value = '';
-            form.querySelector('input[name="description"]').value = '';
-            form.querySelector('input[name="price"]').value = '';
-        }
+    function showViewAll(){
+        document.getElementById('showCreateButton').style.display="block"
+        document.getElementById('eventTable').style.display="block"
+        document.getElementById('createUpdateForm').style.display="none"
+    }
 
-        function getEventFromForm() {
-            var form = document.getElementById('createUpdateForm');
-            var event = {};
-            event.id = form.querySelector('input[name="id"]').value;
-            event.name = form.querySelector('input[name="name"]').value;
-            event.location = form.querySelector('input[name="location"]').value;
-            event.date = form.querySelector('input[name="date"]').value;
-            event.genre = form.querySelector('input[name="genre"]').value;
-            event.description = form.querySelector('input[name="description"]').value;
-            event.price = form.querySelector('input[name="price"]').value;
-            return event;
-        }
+    function showUpdate(buttonElement){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('eventTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
 
-        function populateFormWithEvent(event) {
-            var form = document.getElementById('createUpdateForm');
-            form.querySelector('input[name="id"]').disabled = true;
-            form.querySelector('input[name="id"]').value = event.id;
-            form.querySelector('input[name="name"]').value = event.name;
-            form.querySelector('input[name="location"]').value = event.location;
-            form.querySelector('input[name="date"]').value = event.date;
-            form.querySelector('input[name="genre"]').value = event.genre;
-            form.querySelector('input[name="description"]').value = event.description;
-            form.querySelector('input[name="price"]').value = event.price;
-        }
+        document.getElementById('createLabel').style.display="none"
+        document.getElementById('updateLabel').style.display="inline"
 
-        function addEventToTable(event) {
-            var tableElement = document.getElementById('eventTable');
-            var rowElement = tableElement.insertRow(-1);
-            rowElement.setAttribute('id', event.id);
-            var cell1 = rowElement.insertCell(0);
-            cell1.innerHTML = event.id;
-            var cell2 = rowElement.insertCell(1);
-            cell2.innerHTML = event.name;
-            var cell3 = rowElement.insertCell(2);
-            cell3.innerHTML = event.location;
-            var cell4 = rowElement.insertCell(3);
-            cell4.innerHTML = event.date;
-            var cell5 = rowElement.insertCell(4);
-            cell5.innerHTML = event.genre;
-            var cell6 = rowElement.insertCell(5);
-            cell6.innerHTML = event.description;
-            var cell7 = rowElement.insertCell(6);
-            cell7.innerHTML = event.price;
-            var cell8 = rowElement.insertCell(7);
-            cell8.innerHTML = '<button onclick="showUpdate(this)">Update</button>';
-            var cell9 = rowElement.insertCell(8);
-            cell9.innerHTML = '<button onclick="doDelete(this)">Delete</button>';
-        }
+        document.getElementById('doCreateButton').style.display="none"
+        document.getElementById('doUpdateButton').style.display="block"
 
-        function getEventFromRow(rowElement) {
-            var event = {};
-            event.id = rowElement.cells[0].firstChild.textContent;
-            event.name = rowElement.cells[1].firstChild.textContent;
-            event.location = rowElement.cells[2].firstChild.textContent;
-            event.date = rowElement.cells[3].firstChild.textContent;
-            event.genre = rowElement.cells[4].firstChild.textContent;
-            event.description = rowElement.cells[5].firstChild.textContent;
-            event.price = rowElement.cells[6].firstChild.textContent;
-            return event;
-        }
+        var rowElement = buttonElement.parentNode.parentNode
+        var event = getEventFromRow(rowElement)
+        populateFormWithEvent(event)
+    }
 
-        function setEventInRow(rowElement, event) {
-            rowElement.cells[0].firstChild.textContent = event.id;
-            rowElement.cells[1].firstChild.textContent = event.name;
-            rowElement.cells[2].firstChild.textContent = event.location;
-            rowElement.cells[3].firstChild.textContent = event.date;
-            rowElement.cells[4].firstChild.textContent = event.genre;
-            rowElement.cells[5].firstChild.textContent = event.description;
-            rowElement.cells[6].firstChild.textContent = event.price;
-        }
+    function doCreate(){
+        var form = document.getElementById('createUpdateForm')
 
-        function doCreate() {
-            console.log("creating an event");
-            event = getEventFromForm();
-            createEvent(convertDisplayEventToServerEvent(event), processCreateResponse);
-        }
+        var event = {}
+        event.name = form.querySelector('input[name="name"]').value
+        event.location = form.querySelector('input[name="location"]').value
+        event.date = form.querySelector('input[name="date"]').value
+        event.genre = form.querySelector('input[name="genre"]').value
+        event.description = form.querySelector('input[name="description"]').value
+        event.price = form.querySelector('input[name="price"]').value
 
-        function doUpdate() {
-            event = getEventFromForm();
-            var rowElement = document.getElementById(event.id);
-            setEventInRow(rowElement, event);
-            updateEvent(convertDisplayEventToServerEvent(event), doNothing);
-            showViewall();
-            clearForm();
-        }
+        createEventAjax(event)
+    }
 
-        function doDelete(buttonElement) {
-            console.log("in delete");
-            var tableElement = document.getElementById('eventTable');
-            var rowElement = buttonElement.parentNode.parentNode;
-            id = rowElement.getAttribute("id");
-            console.log("deleting " + id);
-            deleteEvent(id, doNothing);
-            index = rowElement.rowIndex;
-            tableElement.deleteRow(index);
-        }
+    function doUpdate(){
+        var event = getEventFromForm();
+        var rowElement = document.getElementById(event.id);
+        updateEventAjax(event);
+        setEventInRow(rowElement, event);
+       
+        clearForm();
+        showViewAll();
+    }
 
-        function processGetAllResponse(result) {
-            console.log("in process");
-            for (event of result) {
-                displayEvent = {};
-                displayEvent.id = event.id;
-                displayEvent.name = event.name;
-                displayEvent.location = event.location;
-                displayEvent.date = event.date;
-                displayEvent.genre = event.genre;
-                displayEvent.description = event.description;
-                displayEvent.price = event.price;
-                addEventToTable(displayEvent);
+    function doDelete(r){
+        var tableElement = document.getElementById('eventTable');
+        var rowElement = r.parentNode.parentNode;
+        var index = rowElement.rowIndex;
+        deleteEventAjax(rowElement.getAttribute("id"));
+        tableElement.deleteRow(index);
+    }
+
+    function addEventToTable(event){
+        var tableElement = document.getElementById('eventTable')
+        var rowElement = tableElement.insertRow(-1)
+        rowElement.setAttribute('id', event.id)
+        var cell1 = rowElement.insertCell(0);
+        cell1.innerHTML = event.id
+        var cell2 = rowElement.insertCell(1);
+        cell2.innerHTML = event.name
+        var cell3 = rowElement.insertCell(2);
+        cell3.innerHTML = event.location
+        var cell4 = rowElement.insertCell(3);
+        cell4.innerHTML = event.date
+        var cell5 = rowElement.insertCell(4);
+        cell5.innerHTML = event.genre
+        var cell6 = rowElement.insertCell(5);
+        cell6.innerHTML = event.description
+        var cell7 = rowElement.insertCell(6);
+        cell7.innerHTML = event.price
+        var cell8 = rowElement.insertCell(7);
+        cell8.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+        var cell9 = rowElement.insertCell(8);
+        cell9.innerHTML = '<button onclick=doDelete(this)>Delete</button>'
+    }
+
+    function clearForm(){
+        var form = document.getElementById('createUpdateForm')
+
+        form.querySelector('input[name="name"]').value=''
+        form.querySelector('input[name="location"]').value=''
+        form.querySelector('input[name="date"]').value=''
+        form.querySelector('input[name="genre"]').value=''
+        form.querySelector('input[name="description"]').value=''
+        form.querySelector('input[name="price"]').value=''
+    }
+
+    function getEventFromRow(rowElement){
+        var event = {}
+        event.id = rowElement.getAttribute('id')
+        event.name = rowElement.cells[1].firstChild.textContent
+        event.location = rowElement.cells[2].firstChild.textContent
+        event.date = rowElement.cells[3].firstChild.textContent
+        event.genre = rowElement.cells[4].firstChild.textContent
+        event.description = rowElement.cells[5].firstChild.textContent
+        event.price = parseFloat(rowElement.cells[6].firstChild.textContent)
+        return event
+    }
+
+    function setEventInRow(rowElement, event){
+        rowElement.cells[0].firstChild.textContent = event.id
+        rowElement.cells[1].firstChild.textContent = event.name
+        rowElement.cells[2].firstChild.textContent = event.location
+        rowElement.cells[3].firstChild.textContent = event.date
+        rowElement.cells[4].firstChild.textContent = event.genre
+        rowElement.cells[5].firstChild.textContent = event.description
+        rowElement.cells[6].firstChild.textContent = event.price
+    }
+
+    function populateFormWithEvent(event){
+        var form = document.getElementById('createUpdateForm')
+        form.querySelector('input[name="id"]').disabled = true
+
+        form.querySelector('input[name="id"]').value = event.id
+        form.querySelector('input[name="name"]').value = event.name
+        form.querySelector('input[name="location"]').value = event.location
+        form.querySelector('input[name="date"]').value = event.date
+        form.querySelector('input[name="genre"]').value = event.genre
+        form.querySelector('input[name="description"]').value = event.description
+        form.querySelector('input[name="price"]').value = event.price
+    }
+
+    function getEventFromForm(){
+        var form = document.getElementById('createUpdateForm')
+        var event = {}
+        event.id = form.querySelector('input[name="id"]').value
+        event.name = form.querySelector('input[name="name"]').value
+        event.location = form.querySelector('input[name="location"]').value
+        event.date = form.querySelector('input[name="date"]').value
+        event.genre = form.querySelector('input[name="genre"]').value
+        event.description = form.querySelector('input[name="description"]').value
+        event.price = parseFloat(form.querySelector('input[name="price"]').value)
+        return event
+    }
+
+    function getAllAjax(){
+        $.ajax({
+            "url": "/events",
+            "method": "GET",
+            "data": "",
+            "dataType": "JSON",
+            "success": function(result){
+                for (event of result){
+                    addEventToTable(event);
+                }
+            },
+            "error": function(xhr, status, error){
+                console.log("error: " + status + " msg:" + error);
             }
-        }
+        });
+    }
 
-        function convertDisplayEventToServerEvent(displayEvent) {
-            serverEvent = {};
-            serverEvent.id = displayEvent.id;
-            serverEvent.name = displayEvent.name;
-            serverEvent.location = displayEvent.location;
-            serverEvent.date = displayEvent.date;
-            serverEvent.genre = displayEvent.genre;
-            serverEvent.description = displayEvent.description;
-            serverEvent.price = parseInt(displayEvent.price);
-            return serverEvent;
-        }
+    function createEventAjax(event){
+        $.ajax({
+            "url": "/events",
+            "method": "POST",
+            "data": JSON.stringify(event),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success": function(result){
+                event.id = result.id
+                addEventToTable(event)
+                clearForm()
+                showViewAll()
+            },
+            "error": function(xhr, status, error){
+                console.log("error: " + status + " msg:" + error);
+            }
+        });
+    }
 
-        function processCreateResponse(result) {
-            displayEvent = convertServerEventToDisplayEvent(result);
-            addEventToTable(displayEvent);
-            showViewall();
-            clearForm();
-        }
+    function updateEventAjax(event){
+        $.ajax({
+            "url": "/events/" + encodeURI(event.id),
+            "method": "PUT",
+            "data": JSON.stringify(event),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success": function(result){
+            },
+            "error": function(xhr, status, error){
+                console.log("error: " + status + " msg:" + error);
+            }
+        });
+    }
 
-        function doNothing(result) {
-            console.log("nothing:" + result);
-            return "done";
-        }
+    function deleteEventAjax(id){
+        $.ajax({
+            "url": "/events/" + encodeURI(id),
+            "method": "DELETE",
+            "data": "",
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success": function(result){
+            },
+            "error": function(xhr, status, error){
+                console.log("error: " + status + " msg:" + error);
+            }
+        });
+    }
 
-        getAll(processGetAllResponse);
+    getAllAjax();
     </script>
 </html>
