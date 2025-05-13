@@ -79,6 +79,11 @@
                     <span id="genre-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" class="form-control" id="description"></textarea>
+                    <span id="description-error" class="error-message"></span> <!-- Add this line -->
+                </div>
+                <div class="form-group">
                     <label for="price">Price (€)</label>
                     <input type="number" name="price" class="form-control" id="price" />
                     <span id="price-error" class="error-message"></span>
@@ -100,19 +105,25 @@
     const location = document.getElementById("location").value;
     const date = document.getElementById("date").value;
     const genre = document.getElementById("genre").value;
+    const description = document.getElementById("description").value;
     const price = document.getElementById("price").value;
+     
 
     const nameErr = document.getElementById("name-error");
     const locErr = document.getElementById("location-error");
     const dateErr = document.getElementById("date-error");
     const genreErr = document.getElementById("genre-error");
+    const descErr = document.getElementById("description-error"); 
     const priceErr = document.getElementById("price-error");
+    
 
     nameErr.textContent = "";
     locErr.textContent = "";
     dateErr.textContent = "";
     genreErr.textContent = "";
+    descErr.textContent = "";
     priceErr.textContent = "";
+      
 
     let isValid = true;
 
@@ -130,8 +141,13 @@
         dateErr.textContent = "Please select a date.";
         isValid = false;
     }
-        if (genre === "") {
+    if (genre === "") {
         genreErr.textContent = "Please enter the genre.";
+        isValid = false;
+    }
+
+    if (description === "") {  
+        descErr.textContent = "Please enter a description.";
         isValid = false;
     }
 
@@ -140,6 +156,7 @@
         isValid = false;
     }
 
+    
 
     if (isValid) {
         alert("Form submitted successfully!");
@@ -149,7 +166,7 @@
     else {
         return false;
     }
-    }
+}
 
     function resetErrors() {
         document.getElementById("name-error").textContent = "";
@@ -157,17 +174,16 @@
         document.getElementById("date-error").textContent = "";
         document.getElementById("genre-error").textContent = "";
         document.getElementById("price-error").textContent = "";
+        document.getElementById("description-error").textContent = "";
     }   
 
-    function showCreate(){
-        document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('eventTable').style.display="none"
-        document.getElementById('createUpdateForm').style.display="block"
-
-        document.getElementById('formTitle').textContent = "Create Event"
-
-        document.getElementById('doCreateButton').style.display="block"
-        document.getElementById('doUpdateButton').style.display="none"
+    function showCreate() {
+        document.getElementById('showCreateButton').style.display = "none";
+        document.getElementById('eventTable').style.display = "none";
+        document.getElementById('createUpdateForm').style.display = "block";
+        document.getElementById('formTitle').textContent = "Create Event";
+        document.querySelector('button[onclick="doCreate()"]').style.display = "inline-block";
+        document.querySelector('button[onclick="doUpdate()"]').style.display = "none";
     }
 
     function showViewAll(){
@@ -176,19 +192,17 @@
         document.getElementById('createUpdateForm').style.display="none"
     }
 
-    function showUpdate(buttonElement){
-        document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('eventTable').style.display="none"
-        document.getElementById('createUpdateForm').style.display="block"
+    function showUpdate(buttonElement) {
+        document.getElementById('showCreateButton').style.display = "none";
+        document.getElementById('eventTable').style.display = "none";
+        document.getElementById('createUpdateForm').style.display = "block";
+        document.getElementById('formTitle').textContent = "Update Event";
+        document.querySelector('button[onclick="doCreate()"]').style.display = "none";
+        document.querySelector('button[onclick="doUpdate()"]').style.display = "inline-block";
 
-        document.getElementById('formTitle').textContent = "Update Event"
-
-        document.getElementById('doCreateButton').style.display="none"
-        document.getElementById('doUpdateButton').style.display="block"
-
-        var rowElement = buttonElement.parentNode.parentNode
-        var event = getEventFromRow(rowElement)
-        populateFormWithEvent(event)
+        var rowElement = buttonElement.parentNode.parentNode;
+        var event = getEventFromRow(rowElement);
+        populateFormWithEvent(event);
     }
 
     function doCreate(){
@@ -205,12 +219,12 @@
         createEventAjax(event)
     }
 
-    function doUpdate(){
+    function doUpdate() {
         var event = getEventFromForm();
+        console.log("Updating event with ID:", event.id);  // Check if ID is correctly populated
         var rowElement = document.getElementById(event.id);
         updateEventAjax(event);
         setEventInRow(rowElement, event);
-
         clearForm();
         showViewAll();
     }
