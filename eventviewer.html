@@ -273,7 +273,7 @@
         event.date = rowElement.cells[3].textContent;
         event.genre = rowElement.cells[4].textContent;
         event.description = rowElement.cells[5].textContent;
-        event.price = parseFloat(rowElement.cells[6].textContent);
+        event.price = parseInt(rowElement.cells[6].firstChild.textContent,10)
         return event;
     }
 
