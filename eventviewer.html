@@ -242,14 +242,14 @@
     function addEventToTable(event){
         var tableElement = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
         var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute('id', event.id)
+        rowElement.setAttribute('data-id', event.id);
         rowElement.insertCell(0).innerHTML = event.id
         rowElement.insertCell(1).innerHTML = event.name
         rowElement.insertCell(2).innerHTML = event.location
         rowElement.insertCell(3).innerHTML = event.date
         rowElement.insertCell(4).innerHTML = event.genre
         rowElement.insertCell(5).innerHTML = event.description
-        rowElement.insertCell(6).innerHTML = event.price
+        rowElement.insertCell(6).textContent = event.price;
         rowElement.insertCell(7).innerHTML = '<button class="btn btn-sm btn-info mr-2" onclick="showUpdate(this)">Update</button> <button class="btn btn-sm btn-danger" onclick="doDelete(this)">Delete</button>'
     }
 
@@ -267,7 +267,7 @@
 
     function getEventFromRow(rowElement) {
         var event = {};
-        event.id = rowElement.getAttribute('id');
+        event.id = rowElement.getAttribute('data-id');
         event.name = rowElement.cells[1].textContent;
         event.location = rowElement.cells[2].textContent;
         event.date = rowElement.cells[3].textContent;
@@ -300,16 +300,19 @@
     }
 
 
-    function getEventFromForm(){
-        var form = document.getElementById('createUpdateForm')
-        var event = {}
-        event.id = form.querySelector('input[name="id"]').value
-        event.name = form.querySelector('input[name="name"]').value
-        event.location = form.querySelector('input[name="location"]').value
-        event.date = form.querySelector('input[name="date"]').value
-        event.genre = form.querySelector('input[name="genre"]').value
-        event.description = form.querySelector('textarea[name="description"]').value
-        event.price = parseFloat(form.querySelector('input[name="price"]').value)
+    function getEventFromRow(rowElement) {
+        var event = {};
+        event.id = rowElement.getAttribute('id');
+        event.name = rowElement.cells[1].textContent;
+        event.location = rowElement.cells[2].textContent;
+
+            // Fix: convert date to YYYY-MM-DD
+        let rawDate = new Date(rowElement.cells[3].textContent);
+        event.date = rawDate.toISOString().split('T')[0];
+
+        event.genre = rowElement.cells[4].textContent;
+        event.description = rowElement.cells[5].textContent;
+        event.price = parseInt(rowElement.cells[6].textContent, 10);
         return event;
     }
 
