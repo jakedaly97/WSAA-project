@@ -168,7 +168,14 @@
     }
 }
 
-
+    function resetErrors() {
+        document.getElementById("name-error").textContent = "";
+        document.getElementById("location-error").textContent = "";
+        document.getElementById("date-error").textContent = "";
+        document.getElementById("genre-error").textContent = "";
+        document.getElementById("price-error").textContent = "";
+        document.getElementById("description-error").textContent = "";
+    }   
 
     function showCreate() {
         document.getElementById('showCreateButton').style.display = "none";
