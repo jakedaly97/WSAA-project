@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Bootstrap & jQuery -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <style>
@@ -61,319 +61,247 @@
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" class="form-control" id="name" />
-                    <span id="name-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
                     <label for="location">Location</label>
                     <input type="text" name="location" class="form-control" id="location" />
-                    <span id="location-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
                     <label for="date">Date</label>
                     <input type="date" name="date" class="form-control" id="date" />
-                    <span id="date-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
                     <label for="genre">Genre</label>
                     <input type="text" name="genre" class="form-control" id="genre" />
-                    <span id="genre-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
                     <label for="description">Description</label>
                     <textarea name="description" class="form-control" id="description"></textarea>
-                    <span id="description-error" class="error-message"></span> <!-- Add this line -->
                 </div>
                 <div class="form-group">
                     <label for="price">Price (€)</label>
                     <input type="number" name="price" class="form-control" id="price" />
-                    <span id="price-error" class="error-message"></span>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary btn-lg" onclick="if (validateForm()) doCreate()">Create</button>
-                    <button type="button" class="btn btn-info" onclick="if (validateForm()) doUpdate()">Update</button>
+                    <button id="doCreateButton" type="button" class="btn btn-primary btn-lg" onclick="doCreate()">Create</button>
+                    <button id="doUpdateButton" type="button" class="btn btn-info" style="display:none;" onclick="doUpdate()">Update</button>
                     <button type="button" class="btn btn-secondary btn-danger" onclick="showViewAll()">Cancel</button>
                 </div>
             </form>
-            
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <script>
-    
-    function validateForm() {
-    const name = document.getElementById("name").value;
-    const location = document.getElementById("location").value;
-    const date = document.getElementById("date").value;
-    const genre = document.getElementById("genre").value;
-    const description = document.getElementById("description").value;
-    const price = document.getElementById("price").value;
-     
+        function showCreate() {
+            clearForm();
+            document.getElementById('showCreateButton').style.display = "none";
+            document.getElementById('eventTable').style.display = "none";
+            document.getElementById('createUpdateForm').style.display = "block";
 
-    const nameErr = document.getElementById("name-error");
-    const locErr = document.getElementById("location-error");
-    const dateErr = document.getElementById("date-error");
-    const genreErr = document.getElementById("genre-error");
-    const descErr = document.getElementById("description-error"); 
-    const priceErr = document.getElementById("price-error");
-    
+            document.getElementById('formTitle').textContent = 'Create Event';
 
-    nameErr.textContent = "";
-    locErr.textContent = "";
-    dateErr.textContent = "";
-    genreErr.textContent = "";
-    descErr.textContent = "";
-    priceErr.textContent = "";
-      
+            document.getElementById('doCreateButton').style.display = "inline-block";
+            document.getElementById('doUpdateButton').style.display = "none";
+        }
 
-    let isValid = true;
+        function showViewAll() {
+            clearForm();
+            document.getElementById('showCreateButton').style.display = "block";
+            document.getElementById('eventTable').style.display = "table";
+            document.getElementById('createUpdateForm').style.display = "none";
+        }
 
-    if (name === "" || /\d/.test(name)) {
-        nameErr.textContent = "Please enter correct event name.";
-        isValid = false;
-    }
+        function showUpdate(button) {
+            const row = button.closest('tr');
+            const event = getEventFromRow(row);
 
-    if (location === "") {
-        locErr.textContent = "Please enter location.";
-        isValid = false;
-    }
+            document.querySelector('input[name="id"]').value = event.id;
+            document.querySelector('input[name="name"]').value = event.name;
+            document.querySelector('input[name="location"]').value = event.location;
+            document.querySelector('input[name="date"]').value = event.date;
+            document.querySelector('input[name="genre"]').value = event.genre;
+            document.querySelector('textarea[name="description"]').value = event.description;
+            document.querySelector('input[name="price"]').value = event.price;
 
-    if (date === "") {
-        dateErr.textContent = "Please select a date.";
-        isValid = false;
-    }
-    if (genre === "") {
-        genreErr.textContent = "Please enter the genre.";
-        isValid = false;
-    }
+            document.getElementById('formTitle').textContent = 'Update Event';
+            document.getElementById('createUpdateForm').style.display = 'block';
+            document.getElementById('showCreateButton').style.display = "none";
+            document.getElementById('eventTable').style.display = "none";
 
-    if (description === "") {  
-        descErr.textContent = "Please enter a description.";
-        isValid = false;
-    }
+            document.getElementById('doCreateButton').style.display = "none";
+            document.getElementById('doUpdateButton').style.display = "inline-block";
+        }
 
-    if (price === "") {
-        priceErr.textContent = "Please enter a valid price.";
-        isValid = false;
-    }
+        function doCreate() {
+            var form = document.getElementById('createUpdateForm');
 
-    
+            var event = {
+                name: form.querySelector('input[name="name"]').value.trim(),
+                location: form.querySelector('input[name="location"]').value.trim(),
+                date: form.querySelector('input[name="date"]').value,
+                genre: form.querySelector('input[name="genre"]').value.trim(),
+                description: form.querySelector('textarea[name="description"]').value.trim(),
+                price: parseFloat(form.querySelector('input[name="price"]').value.trim())
+            };
 
-    if (isValid) {
-        alert("Form submitted successfully!");
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+            createEventAjax(event);
+        }
 
-    function resetErrors() {
-        document.getElementById("name-error").textContent = "";
-        document.getElementById("location-error").textContent = "";
-        document.getElementById("date-error").textContent = "";
-        document.getElementById("genre-error").textContent = "";
-        document.getElementById("price-error").textContent = "";
-        document.getElementById("description-error").textContent = "";
-    }   
+        function doUpdate() {
+            var event = getEventFromForm();
+            var rowElement = document.getElementById(event.id);
+            updateEventAjax(event);
+            setEventInRow(rowElement, event);
 
-    function showCreate() {
-        document.getElementById('showCreateButton').style.display = "none";
-        document.getElementById('eventTable').style.display = "none";
-        document.getElementById('createUpdateForm').style.display = "block";
-        document.getElementById('formTitle').textContent = "Create Event";
-        document.querySelector('button[onclick="doCreate()"]').style.display = "inline-block";
-        document.querySelector('button[onclick="doUpdate()"]').style.display = "none";
-    }
+            clearForm();
+            showViewAll();
+        }
 
-    function showViewAll(){
-        document.getElementById('showCreateButton').style.display="block"
-        document.getElementById('eventTable').style.display="block"
-        document.getElementById('createUpdateForm').style.display="none"
-    }
+        function doDelete(button) {
+            var rowElement = button.closest('tr');
+            var id = rowElement.getAttribute("id");
 
-    function showUpdate(buttonElement) {
-        console.log("Update button clicked");  // Add this line for debugging
+            deleteEventAjax(id);
+            rowElement.remove();
+        }
 
-        document.getElementById('showCreateButton').style.display = "none";
-        document.getElementById('eventTable').style.display = "none";
-        document.getElementById('createUpdateForm').style.display = "block";
-        document.getElementById('formTitle').textContent = "Update Event";
-        document.querySelector('button[onclick="doCreate()"]').style.display = "none";
-        document.querySelector('button[onclick="doUpdate()"]').style.display = "inline-block";
+        function addEventToTable(event) {
+            const table = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
+            const row = table.insertRow();
+            row.setAttribute('id', event.id);
 
-        var rowElement = buttonElement.parentNode.parentNode;
-        var event = getEventFromRow(rowElement);  // Get the event data from the row
-        populateFormWithEvent(event);  // Populate the form with the event data
-    }
+            row.insertCell(0).textContent = event.id;
+            row.insertCell(1).textContent = event.name;
+            row.insertCell(2).textContent = event.location;
+            row.insertCell(3).textContent = event.date;
+            row.insertCell(4).textContent = event.genre;
+            row.insertCell(5).textContent = event.description;
+            row.insertCell(6).textContent = event.price;
+            row.insertCell(7).innerHTML = `
+                <button class="btn btn-sm btn-warning" onclick="showUpdate(this)">Update</button>
+                <button class="btn btn-sm btn-danger" onclick="doDelete(this)">Delete</button>
+            `;
+        }
 
-    function doCreate(){
-        var form = document.getElementById('createUpdateForm')
+        function clearForm() {
+            var form = document.getElementById('createUpdateForm');
 
-        var event = {}
-        event.name = form.querySelector('input[name="name"]').value
-        event.location = form.querySelector('input[name="location"]').value
-        event.date = form.querySelector('input[name="date"]').value
-        event.genre = form.querySelector('input[name="genre"]').value
-        event.description = form.querySelector('textarea[name="description"]').value
-        event.price = form.querySelector('input[name="price"]').value
+            form.querySelector('input[name="id"]').value = '';
+            form.querySelector('input[name="name"]').value = '';
+            form.querySelector('input[name="location"]').value = '';
+            form.querySelector('input[name="date"]').value = '';
+            form.querySelector('input[name="genre"]').value = '';
+            form.querySelector('textarea[name="description"]').value = '';
+            form.querySelector('input[name="price"]').value = '';
+        }
 
-        createEventAjax(event)
-    }
+        function setEventInRow(rowElement, event) {
+            rowElement.cells[0].textContent = event.id;
+            rowElement.cells[1].textContent = event.name;
+            rowElement.cells[2].textContent = event.location;
+            rowElement.cells[3].textContent = event.date;
+            rowElement.cells[4].textContent = event.genre;
+            rowElement.cells[5].textContent = event.description;
+            rowElement.cells[6].textContent = event.price;
+        }
 
-    function doUpdate() {
-        var event = getEventFromForm();
-        console.log("Updating event with ID:", event.id);  // Check if ID is correctly populated
-        var rowElement = document.getElementById(event.id);
-        updateEventAjax(event);
-        setEventInRow(rowElement, event);
-        
-        clearForm();
-        showViewAll();
-    }
+        function getEventFromRow(rowElement) {
+            let event = {};
+            event.id = rowElement.getAttribute('id');
+            event.name = rowElement.cells[1].textContent;
+            event.location = rowElement.cells[2].textContent;
+            event.date = rowElement.cells[3].textContent;
+            event.genre = rowElement.cells[4].textContent;
+            event.description = rowElement.cells[5].textContent;
+            event.price = parseFloat(rowElement.cells[6].textContent, 10);
+            return event;
+        }
 
-    function doDelete(r){
-        var tableElement = document.getElementById('eventTable');
-        var rowElement = r.parentNode.parentNode;
-        var index = rowElement.rowIndex;
-        deleteEventAjax(rowElement.getAttribute("id"));
-        tableElement.deleteRow(index);
-    }
+        function getEventFromForm() {
+            var form = document.getElementById('createUpdateForm');
+            return {
+                id: form.querySelector('input[name="id"]').value,
+                name: form.querySelector('input[name="name"]').value.trim(),
+                location: form.querySelector('input[name="location"]').value.trim(),
+                date: form.querySelector('input[name="date"]').value,
+                genre: form.querySelector('input[name="genre"]').value.trim(),
+                description: form.querySelector('textarea[name="description"]').value.trim(),
+                price: parseFloat(form.querySelector('input[name="price"]').value)
+            };
+        }
 
-    function addEventToTable(event){
-        var tableElement = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
-        var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute('id', event.id);
-        rowElement.setAttribute('data-id', event.id);
-        rowElement.insertCell(0).innerHTML = event.id
-        rowElement.insertCell(1).innerHTML = event.name
-        rowElement.insertCell(2).innerHTML = event.location
-        rowElement.insertCell(3).innerHTML = event.date
-        rowElement.insertCell(4).innerHTML = event.genre
-        rowElement.insertCell(5).innerHTML = event.description
-        rowElement.insertCell(6).textContent = event.price;
-        rowElement.insertCell(7).innerHTML = '<button class="btn btn-sm btn-info mr-2" onclick="showUpdate(this)">Update</button> <button class="btn btn-sm btn-danger" onclick="doDelete(this)">Delete</button>'
-    }
-
-    function clearForm(){
-        var form = document.getElementById('createUpdateForm')
-
-        form.querySelector('input[name="id"]').value = ''
-        form.querySelector('input[name="name"]').value=''
-        form.querySelector('input[name="location"]').value=''
-        form.querySelector('input[name="date"]').value=''
-        form.querySelector('input[name="genre"]').value=''
-        form.querySelector('textarea[name="description"]').value=''
-        form.querySelector('input[name="price"]').value=''
-    }
-
-    
-
-    function setEventInRow(rowElement, event){
-        rowElement.cells[0].textContent = event.id
-        rowElement.cells[1].textContent = event.name
-        rowElement.cells[2].textContent = event.location
-        rowElement.cells[3].textContent = event.date
-        rowElement.cells[4].textContent = event.genre
-        rowElement.cells[5].textContent = event.description
-        rowElement.cells[6].textContent = event.price
-    }
-
-    function populateFormWithEvent(event) {
-        var form = document.getElementById('createUpdateForm');
-        form.querySelector('input[name="id"]').value = event.id;
-        form.querySelector('input[name="name"]').value = event.name;
-        form.querySelector('input[name="location"]').value = event.location;
-        form.querySelector('input[name="date"]').value = event.date;
-        form.querySelector('input[name="genre"]').value = event.genre;
-        form.querySelector('textarea[name="description"]').value = event.description;
-        form.querySelector('input[name="price"]').value = event.price;
-        return event;
-    }
-
-
-    function getEventFromRow(rowElement) {
-        var event = {};
-        event.id = rowElement.getAttribute('data-id');
-        event.name = rowElement.cells[1].textContent;
-        event.location = rowElement.cells[2].textContent;
-
-            // Fix: convert date to YYYY-MM-DD
-        let rawDate = new Date(rowElement.cells[3].textContent);
-        event.date = rawDate.toISOString().split('T')[0];
-
-        event.genre = rowElement.cells[4].textContent;
-        event.description = rowElement.cells[5].textContent;
-        event.price = parseFloat(rowElement.cells[6].textContent, 10);
-        return event;
-    }
-
-    function getAllAjax(){
-        $.ajax({
-            "url": "/events",
-            "method": "GET",
-            "data": "",
-            "dataType": "JSON",
-            "success": function(result){
-                for (event of result){
-                    addEventToTable(event);
+        function getAllAjax() {
+            $.ajax({
+                url: "/events",
+                method: "GET",
+                dataType: "JSON",
+                success: function(result){
+                    for (let event of result){
+                        addEventToTable(event);
+                    }
+                },
+                error: function(xhr, status, error){
+                    console.log("error: " + status + " msg:" + error);
                 }
-            },
-            "error": function(xhr, status, error){
-                console.log("error: " + status + " msg:" + error);
-            }
-        });
-    }
+            });
+        }
 
-    function createEventAjax(event){
-        $.ajax({
-            "url": "/events",
-            "method": "POST",
-            "data": JSON.stringify(event),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success": function(result){
-                event.id = result.id
-                addEventToTable(event)
-                clearForm()
-                showViewAll()
-            },
-            "error": function(xhr, status, error){
-                console.log("error: " + status + " msg:" + error);
-            }
-        });
-    }
+        function createEventAjax(event){
+            $.ajax({
+                url: "/events",
+                method: "POST",
+                data: JSON.stringify(event),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                success: function(result){
+                    event.id = result.id;
+                    addEventToTable(event);
+                    clearForm();
+                    showViewAll();
+                },
+                error: function(xhr, status, error){
+                    console.log("error: " + status + " msg:" + error);
+                }
+            });
+        }
 
-    function updateEventAjax(event){
-        $.ajax({
-            "url": "/events/" + encodeURI(event.id),
-            "method": "PUT",
-            "data": JSON.stringify(event),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success": function(result){
-            },
-            "error": function(xhr, status, error){
-                console.log("error: " + status + " msg:" + error);
-            }
-        });
-    }
+        function updateEventAjax(event){
+            $.ajax({
+                url: "/events/" + encodeURIComponent(event.id),
+                method: "PUT",
+                data: JSON.stringify(event),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                success: function(result){
+                    // Optionally handle success
+                },
+                error: function(xhr, status, error){
+                    console.log("error: " + status + " msg:" + error);
+                }
+            });
+        }
 
-    function deleteEventAjax(id){
-        $.ajax({
-            "url": "/events/" + encodeURI(id),
-            "method": "DELETE",
-            "data": "",
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success": function(result){
-            },
-            "error": function(xhr, status, error){
-                console.log("error: " + status + " msg:" + error);
-            }
-        });
-    }
+        function deleteEventAjax(id){
+            $.ajax({
+                url: "/events/" + encodeURIComponent(id),
+                method: "DELETE",
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                success: function(result){
+                    // Optionally handle success
+                },
+                error: function(xhr, status, error){
+                    console.log("error: " + status + " msg:" + error);
+                }
+            });
+        }
 
-    getAllAjax();
+        // On page load, load all events
+        window.onload = function() {
+            getAllAjax();
+        }
     </script>
 </body>
 </html>
