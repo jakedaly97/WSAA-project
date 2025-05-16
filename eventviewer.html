@@ -113,24 +113,22 @@
             document.getElementById('createUpdateForm').style.display = "none";
         }
 
-        function showUpdate(buttonElement){
-            document.getElementById('showCreateButton').style.display="none"
-            document.getElementById('eventTable').style.display="none"
-            document.getElementById('createUpdateForm').style.display="block"
+        function showUpdate(button) {
+            const row = button.closest('tr');
+            const event = getEventFromRow(row);
 
-            document.getElementById('createLabel').style.display="none"
-            document.getElementById('updateLabel').style.display="inline"
+            document.querySelector('input[name="id"]').value = event.id;
+            document.querySelector('input[name="name"]').value = event.name;
+            document.querySelector('input[name="location"]').value = event.location;
+            document.querySelector('input[name="date"]').value = event.date;
+            document.querySelector('input[name="genre"]').value = event.genre;
+            document.querySelector('textarea[name="description"]').value = event.description;
+            document.querySelector('input[name="price"]').value = event.price;
 
-            document.getElementById('doCreateButton').style.display="none"
-            document.getElementById('doUpdateButton').style.display="block"
-
-
-            var rowElement = buttonElement.parentNode.parentNode
-             // these is a way of finding the closest <tr> which would safer, closest()
-        
-            var event = getEventFromRow(rowElement)
-            populateFormWithEvent(event)
+            document.getElementById('formTitle').textContent = 'Update Event';
+            document.getElementById('createUpdateForm').style.display = 'block';
         }
+
 
         function doCreate() {
             var form = document.getElementById('createUpdateForm');
@@ -205,19 +203,6 @@
             rowElement.cells[6].textContent = event.price;
         }
 
-        function populateFormWithEvent(event) {
-            var form = document.getElementById('createUpdateForm');
-            form.querySelector('input[name="id"]').disabled = true
-
-            form.querySelector('input[name="id"]').value = event.id;
-            form.querySelector('input[name="name"]').value = event.name;
-            form.querySelector('input[name="location"]').value = event.location;
-            form.querySelector('input[name="date"]').value = event.date;
-            form.querySelector('input[name="genre"]').value = event.genre;
-            form.querySelector('textarea[name="description"]').value = event.description;
-            form.querySelector('input[name="price"]').value = event.price;
-            return event;
-        }
 
         function getEventFromRow(rowElement) {
             let event = {};
