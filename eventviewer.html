@@ -219,18 +219,6 @@
             return event;
         }
 
-        function getEventFromForm() {
-            var form = document.getElementById('createUpdateForm');
-            return {
-                id: form.querySelector('input[name="id"]').value,
-                name: form.querySelector('input[name="name"]').value.trim(),
-                location: form.querySelector('input[name="location"]').value.trim(),
-                date: form.querySelector('input[name="date"]').value,
-                genre: form.querySelector('input[name="genre"]').value.trim(),
-                description: form.querySelector('textarea[name="description"]').value.trim(),
-                price: parseFloat(form.querySelector('input[name="price"]').value)
-            };
-        }
 
         function getAllAjax() {
             $.ajax({
