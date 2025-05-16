@@ -169,20 +169,35 @@
         }
 
         function addEventToTable(event) {
-            const table = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
-            const row = table.insertRow();
-            row.setAttribute('id', event.id);
+            var tableElement = document.getElementById('eventTable');
+            var rowElement = tableElement.insertRow(-1);
+            rowElement.setAttribute('id', event.id);
 
-            row.insertCell(0).textContent = event.id;
-            row.insertCell(1).textContent = event.name;
-            row.insertCell(2).textContent = event.location;
-            row.insertCell(3).textContent = event.date;
-            row.insertCell(4).textContent = event.genre;
-            row.insertCell(5).textContent = event.description;
-            row.insertCell(6).textContent = event.price;
-            row.insertCell(7).innerHTML = `
+            var cell1 = rowElement.insertCell(0);
+            cell1.innerHTML = event.id;
+
+            var cell2 = rowElement.insertCell(1);
+            cell2.innerHTML = event.name;
+
+            var cell3 = rowElement.insertCell(2);
+            cell3.innerHTML = event.location;
+
+            var cell4 = rowElement.insertCell(3);
+            cell4.innerHTML = event.date;
+
+            var cell5 = rowElement.insertCell(4);
+            cell5.innerHTML = event.genre;
+
+            var cell6 = rowElement.insertCell(5);
+            cell6.innerHTML = event.description;
+
+            var cell7 = rowElement.insertCell(6);
+            cell7.innerHTML = event.price;
+
+            var cell8 = rowElement.insertCell(7);
+            cell8.innerHTML = `
                 <button class="btn btn-sm btn-warning" onclick="showUpdate(this)">Update</button>
-                <button class="btn btn-sm btn-danger" onclick="doDelete(this)">Delete</button>
+                <button class="btn btn-sm btn-danger" onclick="doDelete(${event.id})">Delete</button>
             `;
         }
 
