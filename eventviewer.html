@@ -194,24 +194,21 @@
         document.getElementById('createUpdateForm').style.display="none"
     }
 
-    function showUpdate(buttonElement){
-        document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('eventTable').style.display="none"
-        document.getElementById('createUpdateForm').style.display="block"
+    function showUpdate(button) {
+            const row = button.closest('tr');
+            const event = getEventFromRow(row);
 
-        document.getElementById('createLabel').style.display="none"
-        document.getElementById('updateLabel').style.display="inline"
+            document.querySelector('input[name="id"]').value = event.id;
+            document.querySelector('input[name="name"]').value = event.name;
+            document.querySelector('input[name="location"]').value = event.location;
+            document.querySelector('input[name="date"]').value = event.date;
+            document.querySelector('input[name="genre"]').value = event.genre;
+            document.querySelector('textarea[name="description"]').value = event.description;
+            document.querySelector('input[name="price"]').value = event.price;
 
-        document.getElementById('doCreateButton').style.display="none"
-        document.getElementById('doUpdateButton').style.display="block"
-
-
-        var rowElement = buttonElement.parentNode.parentNode
-        // these is a way of finding the closest <tr> which would safer, closest()
-        
-        var event = getEventFromRow(rowElement)
-        populateFormWithEvent(event)
-    }
+            document.getElementById('formTitle').textContent = 'Update Event';
+            document.getElementById('createUpdateForm').style.display = 'block';
+        }
 
     function doCreate(){
         var form = document.getElementById('createUpdateForm')
@@ -247,30 +244,23 @@
         tableElement.deleteRow(index);
     }
 
-    function addEventToTable(event){
-        var tableElement = document.getElementById('eventTable')
-        var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute('id',event.id)
-        var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = event.id
-        var cell2 = rowElement.insertCell(1);
-        cell2.innerHTML = event.name
-        var cell3 = rowElement.insertCell(2);
-        cell3.innerHTML = event.location
-        var cell4 = rowElement.insertCell(3);
-        cell4.innerHTML = event.date
-        var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = event.genre
-        var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = event.description
-        var cell7 = rowElement.insertCell(6);
-        cell7.innerHTML = event.price
-        var cell8 = rowElement.insertCell(7);
-        cell8.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
-        var cell9 = rowElement.insertCell(8);
-        cell9.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+    function addEventToTable(event) {
+            const table = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
+            const row = table.insertRow();
+            row.setAttribute('id', event.id);
 
-    }
+            row.insertCell(0).textContent = event.id;
+            row.insertCell(1).textContent = event.name;
+            row.insertCell(2).textContent = event.location;
+            row.insertCell(3).textContent = event.date;
+            row.insertCell(4).textContent = event.genre;
+            row.insertCell(5).textContent = event.description;
+            row.insertCell(6).textContent = event.price;
+            row.insertCell(7).innerHTML = `
+                <button class="btn btn-sm btn-warning" onclick="showUpdate(this)">Update</button>
+                <button class="btn btn-sm btn-danger" onclick="doDelete(${event.id})">Delete</button>
+            `;
+        }
 
     function clearForm(){
         var form = document.getElementById('createUpdateForm')
@@ -312,20 +302,17 @@
 
 
     function getEventFromRow(rowElement) {
-        var event = {};
-        event.id = rowElement.getAttribute('id');
-        event.name = rowElement.cells[1].firstChild.textContent;
-        event.location = rowElement.cells[2].firstChild.textContent;
-
-     // Convert date to YYYY-MM-DD format
-        let rawDate = new Date(rowElement.cells[3].firstChild.textContent);
-        event.date = rawDate.toISOString().split('T')[0];
-
-        event.genre = rowElement.cells[4].firstChild.textContent;
-        event.description = rowElement.cells[5].firstChild.textContent;
-        event.price = parseFloat(rowElement.cells[6].firstChild.textContent, 10);
-        return event;
-    }
+            let event = {};
+            event.id = rowElement.getAttribute('id');
+            event.name = rowElement.cells[1].textContent;
+            event.location = rowElement.cells[2].textContent;
+            let rawDate = new Date(rowElement.cells[3].textContent);
+            event.date = rawDate.toISOString().split('T')[0];
+            event.genre = rowElement.cells[4].textContent;
+            event.description = rowElement.cells[5].textContent;
+            event.price = parseFloat(rowElement.cells[6].textContent, 10);
+            return event;
+        }
 
     function getAllAjax(){
         $.ajax({
