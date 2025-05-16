@@ -26,6 +26,10 @@
             border-radius: 8px;
             background-color: white;
         }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -81,7 +85,7 @@
                 <div class="form-group">
                     <label for="description">Description</label>
                     <textarea name="description" class="form-control" id="description"></textarea>
-                    <span id="description-error" class="error-message"></span> <!-- Add this line -->
+                    <span id="description-error" class="error-message"></span>
                 </div>
                 <div class="form-group">
                     <label for="price">Price (€)</label>
@@ -89,112 +93,101 @@
                     <span id="price-error" class="error-message"></span>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary btn-lg" onclick="if (validateForm()) doCreate()">Create</button>
-                    <button type="button" class="btn btn-info" onclick="if (validateForm()) doUpdate()">Update</button>
+                    <button id="doCreateButton" type="button" class="btn btn-primary btn-lg" onclick="if (validateForm()) doCreate()">Create</button>
+                    <button id="doUpdateButton" type="button" class="btn btn-info" style="display:none;" onclick="if (validateForm()) doUpdate()">Update</button>
                     <button type="button" class="btn btn-secondary btn-danger" onclick="showViewAll()">Cancel</button>
                 </div>
             </form>
-            
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <script>
-    
-    function validateForm() {
-    const name = document.getElementById("name").value;
-    const location = document.getElementById("location").value;
-    const date = document.getElementById("date").value;
-    const genre = document.getElementById("genre").value;
-    const description = document.getElementById("description").value;
-    const price = document.getElementById("price").value;
-     
+        function validateForm() {
+            const name = document.getElementById("name").value.trim();
+            const location = document.getElementById("location").value.trim();
+            const date = document.getElementById("date").value;
+            const genre = document.getElementById("genre").value.trim();
+            const description = document.getElementById("description").value.trim();
+            const price = document.getElementById("price").value.trim();
 
-    const nameErr = document.getElementById("name-error");
-    const locErr = document.getElementById("location-error");
-    const dateErr = document.getElementById("date-error");
-    const genreErr = document.getElementById("genre-error");
-    const descErr = document.getElementById("description-error"); 
-    const priceErr = document.getElementById("price-error");
-    
+            const nameErr = document.getElementById("name-error");
+            const locErr = document.getElementById("location-error");
+            const dateErr = document.getElementById("date-error");
+            const genreErr = document.getElementById("genre-error");
+            const descErr = document.getElementById("description-error");
+            const priceErr = document.getElementById("price-error");
 
-    nameErr.textContent = "";
-    locErr.textContent = "";
-    dateErr.textContent = "";
-    genreErr.textContent = "";
-    descErr.textContent = "";
-    priceErr.textContent = "";
-      
+            nameErr.textContent = "";
+            locErr.textContent = "";
+            dateErr.textContent = "";
+            genreErr.textContent = "";
+            descErr.textContent = "";
+            priceErr.textContent = "";
 
-    let isValid = true;
+            let isValid = true;
 
-    if (name === "" || /\d/.test(name)) {
-        nameErr.textContent = "Please enter correct event name.";
-        isValid = false;
-    }
+            if (name === "" || /\d/.test(name)) {
+                nameErr.textContent = "Please enter a valid event name without numbers.";
+                isValid = false;
+            }
 
-    if (location === "") {
-        locErr.textContent = "Please enter location.";
-        isValid = false;
-    }
+            if (location === "") {
+                locErr.textContent = "Please enter location.";
+                isValid = false;
+            }
 
-    if (date === "") {
-        dateErr.textContent = "Please select a date.";
-        isValid = false;
-    }
-    if (genre === "") {
-        genreErr.textContent = "Please enter the genre.";
-        isValid = false;
-    }
+            if (date === "") {
+                dateErr.textContent = "Please select a date.";
+                isValid = false;
+            }
 
-    if (description === "") {  
-        descErr.textContent = "Please enter a description.";
-        isValid = false;
-    }
+            if (genre === "") {
+                genreErr.textContent = "Please enter the genre.";
+                isValid = false;
+            }
 
-    if (price === "") {
-        priceErr.textContent = "Please enter a valid price.";
-        isValid = false;
-    }
+            if (description === "") {
+                descErr.textContent = "Please enter a description.";
+                isValid = false;
+            }
 
-    
+            if (price === "" || isNaN(price) || Number(price) < 0) {
+                priceErr.textContent = "Please enter a valid price.";
+                isValid = false;
+            }
 
-    if (isValid) {
-        alert("Form submitted successfully!");
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+            if (isValid) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
-    function resetErrors() {
-        document.getElementById("name-error").textContent = "";
-        document.getElementById("location-error").textContent = "";
-        document.getElementById("date-error").textContent = "";
-        document.getElementById("genre-error").textContent = "";
-        document.getElementById("price-error").textContent = "";
-        document.getElementById("description-error").textContent = "";
-    }   
-    function showCreate(){
-        document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('eventTable').style.display="none"
-        document.getElementById('createUpdateForm').style.display="block"
+        function showCreate() {
+            resetErrors();
+            clearForm();
+            document.getElementById('showCreateButton').style.display = "none";
+            document.getElementById('eventTable').style.display = "none";
+            document.getElementById('createUpdateForm').style.display = "block";
 
-        document.getElementById('createLabel').style.display="inline"
-        document.getElementById('updateLabel').style.display="none"
+            document.getElementById('formTitle').textContent = 'Create Event';
 
-        document.getElementById('doCreateButton').style.display="block"
-        document.getElementById('doUpdateButton').style.display="none"
+            document.getElementById('doCreateButton').style.display = "inline-block";
+            document.getElementById('doUpdateButton').style.display = "none";
+        }
 
-    }
+        function showViewAll() {
+            resetErrors();
+            clearForm();
+            document.getElementById('showCreateButton').style.display = "block";
+            document.getElementById('eventTable').style.display = "table";
+            document.getElementById('createUpdateForm').style.display = "none";
+        }
 
-    function showViewAll(){
-        document.getElementById('showCreateButton').style.display="block"
-        document.getElementById('eventTable').style.display="block"
-        document.getElementById('createUpdateForm').style.display="none"
-    }
-
-    function showUpdate(button) {
+        function showUpdate(button) {
+            resetErrors();
             const row = button.closest('tr');
             const event = getEventFromRow(row);
 
@@ -208,43 +201,47 @@
 
             document.getElementById('formTitle').textContent = 'Update Event';
             document.getElementById('createUpdateForm').style.display = 'block';
+            document.getElementById('showCreateButton').style.display = "none";
+            document.getElementById('eventTable').style.display = "none";
+
+            document.getElementById('doCreateButton').style.display = "none";
+            document.getElementById('doUpdateButton').style.display = "inline-block";
         }
 
-    function doCreate(){
-        var form = document.getElementById('createUpdateForm')
+        function doCreate() {
+            var form = document.getElementById('createUpdateForm');
 
-        var event = {}
+            var event = {
+                name: form.querySelector('input[name="name"]').value.trim(),
+                location: form.querySelector('input[name="location"]').value.trim(),
+                date: form.querySelector('input[name="date"]').value,
+                genre: form.querySelector('input[name="genre"]').value.trim(),
+                description: form.querySelector('textarea[name="description"]').value.trim(),
+                price: parseFloat(form.querySelector('input[name="price"]').value.trim())
+            };
 
-        event.name = form.querySelector('input[name="name"]').value
-        event.location = form.querySelector('input[name="location"]').value
-        event.date = form.querySelector('input[name="date"]').value
-        event.genre = form.querySelector('input[name="genre"]').value
-        event.description = form.querySelector('textarea[name="description"]').value
-        event.price = form.querySelector('input[name="price"]').value
-        console.log(JSON.stringify(event))
+            createEventAjax(event);
+        }
 
-        createEventAjax(event)
-    }
+        function doUpdate() {
+            var event = getEventFromForm();
+            var rowElement = document.getElementById(event.id);
+            updateEventAjax(event);
+            setEventInRow(rowElement, event);
 
-    function doUpdate() {
-        var event = getEventFromForm();
-        var rowElement = document.getElementById(event.id);
-        updateEventAjax(event);
-        setEventInRow(rowElement, event);
+            clearForm();
+            showViewAll();
+        }
 
-        clearForm();
-        showViewAll();
-    }
+        function doDelete(button) {
+            var rowElement = button.closest('tr');
+            var id = rowElement.getAttribute("id");
 
-    function doDelete(r){
-        var tableElement = document.getElementById('eventTable');
-        var rowElement = r.parentNode.parentNode;
-        var index = rowElement.rowIndex;
-        deleteEventAjax(rowElement.getAttribute("id"));
-        tableElement.deleteRow(index);
-    }
+            deleteEventAjax(id);
+            rowElement.remove();
+        }
 
-    function addEventToTable(event) {
+        function addEventToTable(event) {
             const table = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
             const row = table.insertRow();
             row.setAttribute('id', event.id);
@@ -258,50 +255,33 @@
             row.insertCell(6).textContent = event.price;
             row.insertCell(7).innerHTML = `
                 <button class="btn btn-sm btn-warning" onclick="showUpdate(this)">Update</button>
-                <button class="btn btn-sm btn-danger" onclick="doDelete(${event.id})">Delete</button>
+                <button class="btn btn-sm btn-danger" onclick="doDelete(this)">Delete</button>
             `;
         }
 
-    function clearForm(){
-        var form = document.getElementById('createUpdateForm')
+        function clearForm() {
+            var form = document.getElementById('createUpdateForm');
 
-        form.querySelector('input[name="id"]').value = ''
-        form.querySelector('input[name="name"]').value=''
-        form.querySelector('input[name="location"]').value=''
-        form.querySelector('input[name="date"]').value=''
-        form.querySelector('input[name="genre"]').value=''
-        form.querySelector('textarea[name="description"]').value=''
-        form.querySelector('input[name="price"]').value=''
-    }
+            form.querySelector('input[name="id"]').value = '';
+            form.querySelector('input[name="name"]').value = '';
+            form.querySelector('input[name="location"]').value = '';
+            form.querySelector('input[name="date"]').value = '';
+            form.querySelector('input[name="genre"]').value = '';
+            form.querySelector('textarea[name="description"]').value = '';
+            form.querySelector('input[name="price"]').value = '';
+        }
 
-    
+        function setEventInRow(rowElement, event) {
+            rowElement.cells[0].textContent = event.id;
+            rowElement.cells[1].textContent = event.name;
+            rowElement.cells[2].textContent = event.location;
+            rowElement.cells[3].textContent = event.date;
+            rowElement.cells[4].textContent = event.genre;
+            rowElement.cells[5].textContent = event.description;
+            rowElement.cells[6].textContent = event.price;
+        }
 
-    function setEventInRow(rowElement, event){
-        rowElement.cells[0].textContent = event.id
-        rowElement.cells[1].textContent = event.name
-        rowElement.cells[2].textContent = event.location
-        rowElement.cells[3].textContent = event.date
-        rowElement.cells[4].textContent = event.genre
-        rowElement.cells[5].textContent = event.description
-        rowElement.cells[6].textContent = event.price
-    }
-
-    function populateFormWithEvent(event) {
-        var form = document.getElementById('createUpdateForm');
-        form.querySelector('input[name="id"]').disabled = true
-
-        form.querySelector('input[name="id"]').value = event.id;
-        form.querySelector('input[name="name"]').value = event.name;
-        form.querySelector('input[name="location"]').value = event.location;
-        form.querySelector('input[name="date"]').value = event.date;
-        form.querySelector('input[name="genre"]').value = event.genre;
-        form.querySelector('textarea[name="description"]').value = event.description;
-        form.querySelector('input[name="price"]').value = event.price;
-        return event;
-    }
-
-
-    function getEventFromRow(rowElement) {
+        function getEventFromRow(rowElement) {
             let event = {};
             event.id = rowElement.getAttribute('id');
             event.name = rowElement.cells[1].textContent;
@@ -314,76 +294,86 @@
             return event;
         }
 
-    function getAllAjax(){
-        $.ajax({
-            "url": "/events",
-            "method": "GET",
-            "data": "",
-            "dataType": "JSON",
-            "success": function(result){
-                for (event of result){
-                    addEventToTable(event);
+        function getEventFromForm() {
+            var form = document.getElementById('createUpdateForm');
+            return {
+                id: form.querySelector('input[name="id"]').value,
+                name: form.querySelector('input[name="name"]').value.trim(),
+                location: form.querySelector('input[name="location"]').value.trim(),
+                date: form.querySelector('input[name="date"]').value,
+                genre: form.querySelector('input[name="genre"]').value.trim(),
+                description: form.querySelector('textarea[name="description"]').value.trim(),
+                price: parseFloat(form.querySelector('input[name="price"]').value)
+            };
+        }
+
+        function resetErrors() {
+            document.getElementById("name-error").textContent = "";
+            document.getElementById("location-error").textContent = "";
+            document.getElementById("date-error").textContent = "";
+            document.getElementById("genre-error").textContent = "";
+            document.getElementById("price-error").textContent = "";
+            document.getElementById("description-error").textContent = "";
+        }
+
+        function getAllAjax() {
+            $.ajax({
+                url: "/events",
+                method: "GET",
+                dataType: "JSON",
+                success: function(result){
+                    for (let event of result){
+                        addEventToTable(event);
+                    }
+                },
+                error: function(xhr, status, error){
+                    console.log("error: " + status + " msg:" + error);
                 }
-            },
-            "error": function(xhr, status, error){
-                console.log("error: " + status + " msg:" + error);
-            }
-        });
-    }
+            });
+        }
 
-    function createEventAjax(event){
-        $.ajax({
-            "url": "/events",
-            "method": "POST",
-            "data": JSON.stringify(event),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success": function(result){
-                event.id = result.id
-                addEventToTable(event)
-                clearForm()
-                showViewAll()
-            },
-            "error": function(xhr, status, error){
-                console.log("error: " + status + " msg:" + error);
-            }
-        });
-    }
+        function createEventAjax(event){
+            $.ajax({
+                url: "/events",
+                method: "POST",
+                data: JSON.stringify(event),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                success: function(result){
+                    event.id = result.id;
+                    addEventToTable(event);
+                    clearForm();
+                    showViewAll();
+                },
+                error: function(xhr, status, error){
+                    console.log("error: " + status + " msg:" + error);
+                }
+            });
+        }
 
-    function updateEventAjax(event){
-        $.ajax({
-            "url": "/events/" + encodeURI(event.id),
-            "method": "PUT",
-            "data": JSON.stringify(event),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success": function(result){
-            },
-            "error": function(xhr, status, error){
-                console.log("error: " + status + " msg:" + error);
-            }
-        });
-    }
+        function updateEventAjax(event){
+            $.ajax({
+                url: "/events/" + encodeURIComponent(event.id),
+                method: "PUT",
+                data: JSON.stringify(event),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                success: function(result){
+                    // Optionally handle success
+                },
+                error: function(xhr, status, error){
+                    console.log("error: " + status + " msg:" + error);
+                }
+            });
+        }
 
-    function deleteEventAjax(id){
-        $.ajax({
-            "url": "/events/" + encodeURI(id),
-            "method": "DELETE",
-            "data": "",
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success": function(result){
-            },
-            "error": function(xhr, status, error){
-                console.log("error: " + status + " msg:" + error);
-            }
-        });
-    }
-
-    getAllAjax();
-    </script>
-</body>
-</html>
-
-<!-- https://getbootstrap.com/docs/4.0/components/buttons/ 
- https://www.geeksforgeeks.org/form-validation-using-javascript/-->
+        function deleteEventAjax(id){
+            $.ajax({
+                url: "/events/" + encodeURIComponent(id),
+                method: "DELETE",
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                success: function(result){
+                    // Optionally handle success
+                },
+                error: function(xhr, status, error
