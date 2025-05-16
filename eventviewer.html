@@ -169,7 +169,7 @@
         }
 
         function addEventToTable(event) {
-            var tableElement = document.getElementById('eventTable');
+            var tableElement = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
             var rowElement = tableElement.insertRow(-1);
             rowElement.setAttribute('id', event.id);
 
