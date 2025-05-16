@@ -160,7 +160,6 @@
 
     if (isValid) {
         alert("Form submitted successfully!");
-        document.querySelector("form").submit();
         return true;
     }
     else {
@@ -242,6 +241,7 @@
     function addEventToTable(event){
         var tableElement = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
         var rowElement = tableElement.insertRow(-1)
+        rowElement.setAttribute('id', event.id);
         rowElement.setAttribute('data-id', event.id);
         rowElement.insertCell(0).innerHTML = event.id
         rowElement.insertCell(1).innerHTML = event.name
@@ -265,17 +265,7 @@
         form.querySelector('input[name="price"]').value=''
     }
 
-    function getEventFromRow(rowElement) {
-        var event = {};
-        event.id = rowElement.getAttribute('data-id');
-        event.name = rowElement.cells[1].textContent;
-        event.location = rowElement.cells[2].textContent;
-        event.date = rowElement.cells[3].textContent;
-        event.genre = rowElement.cells[4].textContent;
-        event.description = rowElement.cells[5].textContent;
-        event.price = parseInt(rowElement.cells[6].firstChild.textContent,10)
-        return event;
-    }
+    
 
     function setEventInRow(rowElement, event){
         rowElement.cells[0].textContent = event.id
