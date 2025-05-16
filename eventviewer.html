@@ -205,6 +205,18 @@
             rowElement.cells[6].textContent = event.price;
         }
 
+        function populateFormWithEvent(event) {
+            var form = document.getElementById('createUpdateForm');
+            form.querySelector('input[name="id"]').value = event.id;
+            form.querySelector('input[name="name"]').value = event.name;
+            form.querySelector('input[name="location"]').value = event.location;
+            form.querySelector('input[name="date"]').value = event.date;
+            form.querySelector('input[name="genre"]').value = event.genre;
+            orm.querySelector('textarea[name="description"]').value = event.description;
+            form.querySelector('input[name="price"]').value = event.price;
+            return event;
+        }
+
         function getEventFromRow(rowElement) {
             let event = {};
             event.id = rowElement.getAttribute('id');
