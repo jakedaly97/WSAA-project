@@ -151,7 +151,7 @@
         }
 
         function doUpdate() {
-            var event = getEventFromForm();
+            var event = getEventFromRow();
             var rowElement = document.getElementById(event.id);
             updateEventAjax(event);
             setEventInRow(rowElement, event);
@@ -182,7 +182,7 @@
             row.insertCell(6).textContent = event.price;
             row.insertCell(7).innerHTML = `
                 <button class="btn btn-sm btn-warning" onclick="showUpdate(this)">Update</button>
-                <button class="btn btn-sm btn-danger" onclick="doDelete(${event.id})">Delete</button>
+                <button class="btn btn-sm btn-danger" onclick="doDelete(this)">Delete</button>
             `;
         }
 
