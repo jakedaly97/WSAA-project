@@ -113,25 +113,23 @@
             document.getElementById('createUpdateForm').style.display = "none";
         }
 
-        function showUpdate(button) {
-            const row = button.closest('tr');
-            const event = getEventFromRow(row);
+        function showUpdate(buttonElement){
+            document.getElementById('showCreateButton').style.display="none"
+            document.getElementById('bookTable').style.display="none"
+            document.getElementById('createUpdateForm').style.display="block"
 
-            document.querySelector('input[name="id"]').value = event.id;
-            document.querySelector('input[name="name"]').value = event.name;
-            document.querySelector('input[name="location"]').value = event.location;
-            document.querySelector('input[name="date"]').value = event.date;
-            document.querySelector('input[name="genre"]').value = event.genre;
-            document.querySelector('textarea[name="description"]').value = event.description;
-            document.querySelector('input[name="price"]').value = event.price;
+            document.getElementById('createLabel').style.display="none"
+            document.getElementById('updateLabel').style.display="inline"
 
-            document.getElementById('formTitle').textContent = 'Update Event';
-            document.getElementById('createUpdateForm').style.display = 'block';
-            document.getElementById('showCreateButton').style.display = "none";
-            document.getElementById('eventTable').style.display = "none";
+            document.getElementById('doCreateButton').style.display="none"
+            document.getElementById('doUpdateButton').style.display="block"
 
-            document.getElementById('doCreateButton').style.display = "none";
-            document.getElementById('doUpdateButton').style.display = "inline-block";
+
+            var rowElement = buttonElement.parentNode.parentNode
+             // these is a way of finding the closest <tr> which would safer, closest()
+        
+            var event = getBookFromRow(rowElement)
+            populateFormWithBook(event)
         }
 
         function doCreate() {
