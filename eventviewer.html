@@ -150,11 +150,11 @@
             createEventAjax(event);
         }
 
-        function doUpdate() {
-            var event = getEventFromForm();
+          function doUpdate() {
+            var event = getEventFromForm(); // ✅ read from form, not from table
             var rowElement = document.getElementById(event.id);
-            updateEventAjax(event);
-            setEventInRow(rowElement, event);
+            updateEventAjax(event); // ✅ update server
+            setEventInRow(rowElement, event); // ✅ update table row display
 
             clearForm();
             showViewAll();
@@ -221,18 +221,6 @@
             return event;
         }
 
-        function getEventFromForm() {
-        var form = document.getElementById('createUpdateForm');
-        var event = {};
-        event.id = form.querySelector('input[name="id"]').value;
-        event.name = form.querySelector('input[name="name"]').value;
-        event.location = form.querySelector('input[name="location"]').value;
-        event.date = form.querySelector('input[name="date"]').value;
-        event.genre = form.querySelector('input[name="genre"]').value;
-        event.description = form.querySelector('textarea[name="description"]').value;
-        event.price = parseFloat(form.querySelector('input[name="price"]').value, 10);
-        return event;
-
 
         function getAllAjax() {
             $.ajax({
@@ -284,6 +272,22 @@
                 }
             });
         }
+
+        function getEventFromForm() {
+            var form = document.getElementById('createUpdateForm');
+
+            var event = {
+                id: form.querySelector('input[name="id"]').value,
+                name: form.querySelector('input[name="name"]').value.trim(),
+                location: form.querySelector('input[name="location"]').value.trim(),
+                date: form.querySelector('input[name="date"]').value,
+                genre: form.querySelector('input[name="genre"]').value.trim(),
+                description: form.querySelector('textarea[name="description"]').value.trim(),
+                price: parseFloat(form.querySelector('input[name="price"]').value.trim())
+            };
+
+    return event;
+}
 
         function deleteEventAjax(id){
             $.ajax({
