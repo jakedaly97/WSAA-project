@@ -292,7 +292,7 @@
 
     function getEventFromRow(rowElement) {
         var event = {};
-        event.id = rowElement.getAttribute('id');
+        event.id = rowElement.getAttribute('data-id');
         event.name = rowElement.cells[1].textContent;
         event.location = rowElement.cells[2].textContent;
 
@@ -302,7 +302,7 @@
 
         event.genre = rowElement.cells[4].textContent;
         event.description = rowElement.cells[5].textContent;
-        event.price = parseInt(rowElement.cells[6].textContent, 10);
+        event.price = parseFloat(rowElement.cells[6].textContent, 10);
         return event;
     }
 
