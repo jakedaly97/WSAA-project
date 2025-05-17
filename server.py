@@ -32,8 +32,6 @@ def create():
     if not request.json:
         abort(400)
     
-    if request.json['name'] == "":
-        abort(400, "Name missing")
     
     # Retrieve data from the request
     event = {

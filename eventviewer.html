@@ -61,30 +61,36 @@
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" class="form-control" id="name" />
+                    <span id="name-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label for="location">Location</label>
                     <input type="text" name="location" class="form-control" id="location" />
+                    <span id="location-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label for="date">Date</label>
                     <input type="date" name="date" class="form-control" id="date" />
+                    <span id="date-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label for="genre">Genre</label>
                     <input type="text" name="genre" class="form-control" id="genre" />
+                    <span id="genre-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label for="description">Description</label>
                     <textarea name="description" class="form-control" id="description"></textarea>
+                    <span id="description-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label for="price">Price (€)</label>
                     <input type="number" name="price" class="form-control" id="price" />
+                    <span id="price-error" class="text-danger"></span>
                 </div>
                 <div>
-                    <button id="doCreateButton" type="button" class="btn btn-primary btn-lg" onclick="doCreate()">Create</button>
-                    <button id="doUpdateButton" type="button" class="btn btn-info" style="display:none;" onclick="doUpdate()">Update</button>
+                    <button id="doCreateButton" type="button" class="btn btn-primary btn-lg" onclick="if(validateForm()) doCreate()">Create</button>
+                    <button id="doUpdateButton" type="button" class="btn btn-info" style="display:none;" onclick="if(validateForm()) doUpdate()">Update</button>
                     <button type="button" class="btn btn-secondary btn-danger" onclick="showViewAll()">Cancel</button>
                 </div>
             </form>
@@ -94,6 +100,76 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <script>
+
+        function validateForm() {
+            const name = document.getElementById("name").value.trim();
+            const location = document.getElementById("location").value.trim();
+            const date = document.getElementById("date").value;
+            const genre = document.getElementById("genre").value.trim();
+            const description = document.getElementById("description").value.trim();
+            const price = document.getElementById("price").value.trim();
+
+            const nameErr = document.getElementById("name-error");
+            const locationErr = document.getElementById("location-error");
+            const dateErr = document.getElementById("date-error");
+            const genreErr = document.getElementById("genre-error");
+            const descriptionErr = document.getElementById("description-error");
+            const priceErr = document.getElementById("price-error");
+
+            nameErr.textContent = "";
+            locationErr.textContent = "";
+            dateErr.textContent = "";
+            genreErr.textContent = "";
+            descriptionErr.textContent = "";
+            priceErr.textContent = "";
+
+            let isValid = true;
+
+            if (name === "") {
+                nameErr.textContent = "Event name is required.";
+                isValid = false;
+            }
+
+            if (location === "") {
+                locationErr.textContent = "Location is required.";
+                isValid = false;
+            }
+
+            if (date === "") {
+                dateErr.textContent = "Date is required.";
+                isValid = false;
+            }
+
+            if (genre === "") {
+                genreErr.textContent = "Genre is required.";
+                isValid = false;
+            }
+
+            if (description.length < 10) {
+                descriptionErr.textContent = "Description should be at least 10 characters.";
+                isValid = false;
+            }
+
+            if (price === "" || isNaN(price) || parseFloat(price) < 0) {
+                priceErr.textContent = "Enter a valid price.";
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function resetErrors() {
+            document.getElementById("name-error").textContent = "";
+            document.getElementById("location-error").textContent = "";
+            document.getElementById("date-error").textContent = "";
+            document.getElementById("genre-error").textContent = "";
+            document.getElementById("description-error").textContent = "";
+            document.getElementById("price-error").textContent = "";
+        }
+
+
+
+
         function showCreate() {
             clearForm();
             document.getElementById('showCreateButton').style.display = "none";
