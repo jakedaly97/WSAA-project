@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+    <!-- Custom styling -->
     <style>
         body {
             padding: 2rem;
@@ -30,12 +31,15 @@
 </head>
 <body>
     <div class="container">
+        <!-- Page Title -->
         <h1 class="text-center">Event Manager</h1>
 
+        <!-- Button to show the event creation form -->
         <div class="text-right mb-3">
             <button id="showCreateButton" class="btn btn-primary" onclick="showCreate()">Create New Event</button>
         </div>
 
+        <!-- Table showing event details -->
         <table class="table table-striped table-bordered" id="eventTable">
             <thead class="thead-dark">
                 <tr>
@@ -54,53 +58,75 @@
             </tbody>
         </table>
 
+        <!-- Hidden form for creating/updating events -->
         <div id="createUpdateForm" style="display: none;">
             <h4 id="formTitle">Create Event</h4>
             <form>
                 <input type="hidden" name="id" />
+
+                <!-- Event Name -->
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" class="form-control" id="name" />
                     <span id="name-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+
+                    <!-- Location -->
                     <label for="location">Location</label>
                     <input type="text" name="location" class="form-control" id="location" />
                     <span id="location-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+
+                     <!-- Date -->
                     <label for="date">Date</label>
                     <input type="date" name="date" class="form-control" id="date" />
                     <span id="date-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+
+                    <!-- Genre -->
                     <label for="genre">Genre</label>
                     <input type="text" name="genre" class="form-control" id="genre" />
                     <span id="genre-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+
+                    <!-- Description -->
                     <label for="description">Description</label>
                     <textarea name="description" class="form-control" id="description"></textarea>
                     <span id="description-error" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+
+                    <!-- Price -->
                     <label for="price">Price (€)</label>
                     <input type="number" name="price" class="form-control" id="price" />
                     <span id="price-error" class="text-danger"></span>
                 </div>
+
+                <!-- Form Buttons -->
                 <div>
+                    <!-- Create button to create new events -->
                     <button id="doCreateButton" type="button" class="btn btn-primary btn-lg" onclick="if(validateForm()) doCreate()">Create</button>
+
+                    <!-- Update button to update existing events -->
                     <button id="doUpdateButton" type="button" class="btn btn-info" style="display:none;" onclick="if(validateForm()) doUpdate()">Update</button>
+
+                    <!-- Cancel button to go back to the table view -->
                     <button type="button" class="btn btn-secondary btn-danger" onclick="showViewAll()">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Bootstrap JS Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <script>
 
+        // Validates the form before creating/updating an event, https://www.geeksforgeeks.org/form-validation-using-javascript/
         function validateForm() {
             const name = document.getElementById("name").value.trim();
             const location = document.getElementById("location").value.trim();
@@ -145,11 +171,14 @@
                 isValid = false;
             }
 
+            // https://www.w3schools.com/jsref/jsref_length_string.asp, length function in js
             if (description.length < 10) {
                 descriptionErr.textContent = "Description should be at least 10 characters.";
                 isValid = false;
             }
 
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isNaN, isNan function to check if value is a number 
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat, parseFloat to convert string to float
             if (price === "" || isNaN(price) || parseFloat(price) < 0) {
                 priceErr.textContent = "Enter a valid price.";
                 isValid = false;
@@ -158,6 +187,7 @@
             return isValid;
         }
 
+        // Clears validation form errors
         function resetErrors() {
             document.getElementById("name-error").textContent = "";
             document.getElementById("location-error").textContent = "";
@@ -169,7 +199,7 @@
 
 
 
-
+        // Shows the create event form
         function showCreate() {
             clearForm();
             document.getElementById('showCreateButton').style.display = "none";
@@ -182,6 +212,7 @@
             document.getElementById('doUpdateButton').style.display = "none";
         }
 
+        // Shows table view and hides the form
         function showViewAll() {
             clearForm();
             document.getElementById('showCreateButton').style.display = "block";
@@ -189,10 +220,12 @@
             document.getElementById('createUpdateForm').style.display = "none";
         }
 
+        // Shows the update form with the data from the selected row
         function showUpdate(button) {
             const row = button.closest('tr');
             const event = getEventFromRow(row);
 
+            // Populates the form with the existing event data
             document.querySelector('input[name="id"]').value = event.id;
             document.querySelector('input[name="name"]').value = event.name;
             document.querySelector('input[name="location"]').value = event.location;
@@ -201,6 +234,7 @@
             document.querySelector('textarea[name="description"]').value = event.description;
             document.querySelector('input[name="price"]').value = event.price;
 
+            // show update form and buttons
             document.getElementById('formTitle').textContent = 'Update Event';
             document.getElementById('createUpdateForm').style.display = 'block';
             document.getElementById('showCreateButton').style.display = "none";
@@ -210,7 +244,7 @@
             document.getElementById('doUpdateButton').style.display = "inline-block";
         }
 
-
+        // Create a new event using form data
         function doCreate() {
             var form = document.getElementById('createUpdateForm');
 
@@ -226,6 +260,7 @@
             createEventAjax(event);
         }
 
+        // update existing event
           function doUpdate() {
             var event = getEventFromForm(); // ✅ read from form, not from table
             var rowElement = document.getElementById(event.id);
@@ -236,6 +271,7 @@
             showViewAll();
         }
 
+        // Delete an event row and make a delete request
         function doDelete(button) {
             if (confirm("Are you sure you want to delete?") == true) {
                 text = "You pressed OK!";
@@ -251,6 +287,7 @@
             }
         }
 
+        // Adds a new event row to the table
         function addEventToTable(event) {
             const table = document.getElementById('eventTable').getElementsByTagName('tbody')[0];
             const row = table.insertRow();
@@ -269,6 +306,7 @@
             `;
         }
 
+        // clears all form inputs
         function clearForm() {
             var form = document.getElementById('createUpdateForm');
 
@@ -281,6 +319,7 @@
             form.querySelector('input[name="price"]').value = '';
         }
 
+        // updates a tables rows content with updated event data
         function setEventInRow(rowElement, event) {
             rowElement.cells[0].textContent = event.id;
             rowElement.cells[1].textContent = event.name;
@@ -292,6 +331,7 @@
         }
 
 
+        // Extracts event object from a table row
         function getEventFromRow(rowElement) {
             let event = {};
             event.id = rowElement.getAttribute('id');
@@ -304,6 +344,7 @@
             return event;
         }
 
+        // Extracts event object from the form fields
         function getEventFromForm(){
             var form = document.getElementById('createUpdateForm')
             var event = {}
@@ -319,6 +360,7 @@
         }
 
 
+        // Loads all events from backend API
         function getAllAjax() {
             $.ajax({
                 url: "/events",
@@ -335,6 +377,7 @@
             });
         }
 
+        // Sends post request to create a new event
         function createEventAjax(event){
             $.ajax({
                 url: "/events",
@@ -354,6 +397,7 @@
             });
         }
 
+        // Sends put request to update an event
         function updateEventAjax(event){
             $.ajax({
                 url: "/events/" + encodeURIComponent(event.id),
@@ -371,6 +415,7 @@
         }
 
 
+        // Sends delete request to remove an event
         function deleteEventAjax(id){
             $.ajax({
                 url: "/events/" + encodeURIComponent(id),
