@@ -90,4 +90,6 @@ def delete(id):
 if __name__ == '__main__':
     app.run(debug=True)
     
+# Resources
+# Pretty much the same as Andrews code found here, https://github.com/andrewbeattycourseware/deploytopythonanywhere/blob/main/server.py
 # https://stackoverflow.com/questions/20646822/how-to-serve-static-files-in-flask, serving static files in flask
