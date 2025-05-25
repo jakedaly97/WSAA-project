@@ -129,7 +129,8 @@
 
     <script>
 
-        // Validates the form before creating/updating an event, https://www.geeksforgeeks.org/form-validation-using-javascript/
+        // Validates the form inputs before creating or updating an event
+        // Reference: https://www.geeksforgeeks.org/form-validation-using-javascript/
         function validateForm() {
             const name = document.getElementById("name").value.trim();
             const location = document.getElementById("location").value.trim();
@@ -174,14 +175,16 @@
                 isValid = false;
             }
 
-            // https://www.w3schools.com/jsref/jsref_length_string.asp, length function in js
+                // Validate description: must be at least 10 characters long
+                // Reference: https://www.w3schools.com/jsref/jsref_length_string.asp
             if (description.length < 10) {
                 descriptionErr.textContent = "Description should be at least 10 characters.";
                 isValid = false;
             }
 
-            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isNaN, isNan function to check if value is a number 
-            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat, parseFloat to convert string to float
+            // Validate price: must be non-empty, a valid number, and not negative
+            // Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isNaN
+            // Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
             if (price === "" || isNaN(price) || parseFloat(price) < 0) {
                 priceErr.textContent = "Enter a valid price.";
                 isValid = false;
@@ -204,7 +207,9 @@
 
         // Shows the create event form
         function showCreate() {
-            clearForm();
+            clearForm(); // Clear any existing data from the form
+
+
             document.getElementById('showCreateButton').style.display = "none";
             document.getElementById('eventTable').style.display = "none";
             document.getElementById('createUpdateForm').style.display = "block";
@@ -224,8 +229,13 @@
         }
 
         // Shows the update form with the data from the selected row
+        // `button` is the clicked update button inside the row
         function showUpdate(button) {
+
+             // Find the closest table row of the clicked button
             const row = button.closest('tr');
+
+            // Extract event data from the row into an object
             const event = getEventFromRow(row);
 
             // Populates the form with the existing event data
@@ -251,6 +261,7 @@
         function doCreate() {
             var form = document.getElementById('createUpdateForm');
 
+            // Create event object by reading values from the form and trimming strings
             var event = {
                 name: form.querySelector('input[name="name"]').value.trim(),
                 location: form.querySelector('input[name="location"]').value.trim(),
@@ -276,16 +287,21 @@
 
         // Delete an event row and make a delete request
         function doDelete(button) {
+            // Confirm deletion with the user
             if (confirm("Are you sure you want to delete?") == true) {
                 text = "You pressed OK!";
             
+                // Find the table row of the clicked delete button
                 var rowElement = button.closest('tr');
+
+                // Get the event ID from the row's id attribute
                 var id = rowElement.getAttribute("id");
 
                 deleteEventAjax(id);
                 rowElement.remove();
 
             } else {
+                // User cancels deletion
                 text = "You canceled!";
             }
         }
@@ -296,6 +312,7 @@
             const row = table.insertRow();
             row.setAttribute('id', event.id);
 
+            // Adds event data to cells
             row.insertCell(0).textContent = event.id;
             row.insertCell(1).textContent = event.name;
             row.insertCell(2).textContent = event.location;
@@ -303,6 +320,8 @@
             row.insertCell(4).textContent = event.genre;
             row.insertCell(5).textContent = event.description;
             row.insertCell(6).textContent = event.price;
+
+            // Update and delete buttons with event handlers attached
             row.insertCell(7).innerHTML = `
                 <button class="btn btn-sm btn-warning" onclick="showUpdate(this)">Update</button>
                 <button class="btn btn-sm btn-danger" onclick="doDelete(this)">Delete</button>
@@ -325,7 +344,7 @@
         // updates a tables rows content with updated event data
         function setEventInRow(rowElement, event) {
             rowElement.cells[0].textContent = event.id;
-            rowElement.cells[1].textContent = event.name;
+            rowElement.cells[1].textContent = event.name; 
             rowElement.cells[2].textContent = event.location;
             rowElement.cells[3].textContent = event.date;
             rowElement.cells[4].textContent = event.genre;
@@ -337,13 +356,13 @@
         // Extracts event object from a table row
         function getEventFromRow(rowElement) {
             let event = {};
-            event.id = rowElement.getAttribute('id');
-            event.name = rowElement.cells[1].textContent;
+            event.id = rowElement.getAttribute('id'); // ID is stored as row attribute
+            event.name = rowElement.cells[1].textContent;  // Name in cell 1, etc
             event.location = rowElement.cells[2].textContent;
             event.date = rowElement.cells[3].textContent;
             event.genre = rowElement.cells[4].textContent;
             event.description = rowElement.cells[5].textContent;
-            event.price = parseFloat(rowElement.cells[6].textContent, 10);
+            event.price = parseFloat(rowElement.cells[6].textContent, 10); // Price parsed as float from cell 6
             return event;
         }
 
