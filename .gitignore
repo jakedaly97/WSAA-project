@@ -192,6 +192,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+#dbconfig.py
+dbconfig.py
+
 
 ## WINDOWS GITIGNORE
 
