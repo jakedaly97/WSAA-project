@@ -12,6 +12,12 @@ The frontend (eventviewer.html) can consume these APIs to display or manage even
 
 Link to web app hosted on PythonAnywhere:  https://jakedaly97.pythonanywhere.com/eventviewer.html
 
+## Technologies Used
+
+- **Backend**: Python (Flask), MySQL
+- **Frontend**: HTML, CSS (Bootstrap), JavaScript (jQuery)
+- **Hosting**: PythonAnywhere
+
 
 ---
 
