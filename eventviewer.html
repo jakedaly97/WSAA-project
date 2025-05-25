@@ -53,7 +53,7 @@
                     <th>Genre</th>
                     <th>Description</th>
                     <th>Price</th>
-                    <th>Actions</th>
+                    <th>Actions</th> <!-- For Update/Delete buttons -->
                 </tr>
             </thead>
             <tbody>
@@ -109,7 +109,7 @@
                     <span id="price-error" class="text-danger"></span>
                 </div>
 
-                <!-- Form Buttons -->
+                <!-- Form Buttons, https://getbootstrap.com/docs/4.0/components/buttons/ -->
                 <div>
                     <!-- Create button to create new events -->
                     <button id="doCreateButton" type="button" class="btn btn-primary btn-lg" onclick="if(validateForm()) doCreate()">Create</button>
