@@ -262,10 +262,10 @@
 
         // update existing event
           function doUpdate() {
-            var event = getEventFromForm(); // ✅ read from form, not from table
+            var event = getEventFromForm(); //  read from form, not from table
             var rowElement = document.getElementById(event.id);
-            updateEventAjax(event); // ✅ update server
-            setEventInRow(rowElement, event); // ✅ update table row display
+            updateEventAjax(event); //  update server
+            setEventInRow(rowElement, event); //  update table row display
 
             clearForm();
             showViewAll();
@@ -431,10 +431,9 @@
             });
         }
 
-        // On page load, load all events
-        window.onload = function() {
-            getAllAjax();
-        }
+       
+        getAllAjax();
+        
     </script>
 </body>
 </html>
