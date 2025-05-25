@@ -1,3 +1,6 @@
+# dbconfig.py
+# Author: Jake Daly
+
 mysql = {
     'host':"jakedaly97.mysql.pythonanywhere-services.com",
     'user':"jakedaly97",

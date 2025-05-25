@@ -1,3 +1,6 @@
+# server.py
+# Author: Jake Daly
+
 from flask import Flask, jsonify, request, abort, send_from_directory
 import os
 

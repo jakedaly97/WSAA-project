@@ -1,3 +1,6 @@
+# eventDAO.py
+# Author: Jake Daly
+
 import mysql.connector
 import dbconfig as cfg
 
