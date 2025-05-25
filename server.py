@@ -7,6 +7,7 @@ app = Flask(__name__, static_url_path='', static_folder='.')
 # Import the eventDAO for database operations
 from eventDAO import eventDAO
 
+
 # Route to serve the eventviewer.html file, https://stackoverflow.com/questions/20646822/how-to-serve-static-files-in-flask
 @app.route('/eventviewer.html')
 def eventviewer():
