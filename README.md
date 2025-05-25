@@ -90,12 +90,12 @@ If you want to run the project on your own machine:
 
 2. Set up a Python virtual environment and activate it:
 
-python -m venv venv
-venv\Scripts\activate
+   `python -m venv venv
+   venv\Scripts\activate`
 
 3. Install the required Python dependencies
 
-pip install -r requirements.txt
+   `pip install -r requirements.txt`
 
 4. Set up a MYSQL database:
 
@@ -105,26 +105,26 @@ pip install -r requirements.txt
 
 5. Configure the database connection:
 
-Open the dbconfig.py file and update it with your MySQL credentials and connection info. Example:
+   Open the dbconfig.py file and update it with your MySQL credentials and connection info. Example:
 
-config = {
-    'user': 'your_mysql_username',
-    'password': 'your_mysql_password',
-    'host': 'localhost',  # or your remote MySQL server
-    'database': 'your_database_name'
-}
+   `config = {
+       'user': 'your_mysql_username',
+       'password': 'your_mysql_password',
+       'host': 'localhost',  # or your remote MySQL server
+       'database': 'your_database_name'
+   }`
 
 6. Run the Flask server locally:
 
-python server.py
+   `python server.py`
 
-By default, the server will start at:
+   By default, the server will start at:
 
-http://127.0.0.1:5000/
+   http://127.0.0.1:5000/
 
 7. Open the frontend:
 
-You can open eventviewer.html directly in your web browser for simple viewing.
+   You can open eventviewer.html directly in your web browser for simple viewing.
 
 
 ## Getting Help
