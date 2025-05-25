@@ -65,10 +65,6 @@ The Flask app is deployed and hosted on PythonAnywhere, with the MySQL database 
 
 No local setup or installation is required. The app and database are hosted on PythonAnywhere.
 
-### Required Libraries
-
-
-
 
 ## Getting Help
 
